@@ -1,5 +1,11 @@
 import { Schema, model } from "mongoose";
 
+const ColorSchema = new Schema({
+    colorName: { type: String, required: true },
+    colorCode: { type: String, required: true },
+    image: { type: [String], required: true },
+  }, { _id: false });
+
 const ProductSchema = new Schema({
     productType: { type: String, required: true },
     styleName: { type: String, required: true },
@@ -7,8 +13,11 @@ const ProductSchema = new Schema({
     description: { type: String },
     price: { type: Number, default: 499, required:true },
     size: { type: [String], required: true },
-    color: { type: [Object]},
+    color: { type: [ColorSchema], required: true },
+    tag: { type: [String], default:[] },
     createdOn: { type: Date, default: new Date().getTime() },
 });
 
-export const Note = model("Products", ProductSchema)
+
+export const Product = model("Product", ProductSchema)
+export const Color = model("Color", ColorSchema)
