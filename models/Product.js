@@ -14,9 +14,10 @@ const ProductSchema = new Schema({
     price: { type: Number, default: 499, required:true },
     size: { type: [String], required: true },
     color: { type: [ColorSchema], required: true },
+    tag: { type: [String], default:[] },
     createdOn: { type: Date, default: new Date().getTime() },
 });
 
 
-export const Product = model("Products", ProductSchema)
+export const Product = model("Product", ProductSchema)
 export const Color = model("Color", ColorSchema)
