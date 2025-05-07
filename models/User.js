@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const AddressSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
-    address: { type: String, required: true },
+    addressName: { type: String, required: true },
     specific: { type: String },
     subDistrict: { type: String, required: true },
     district: { type: String, required: true },
@@ -31,7 +31,7 @@ const UserSchema = new Schema({
 
 const CreatorSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
-  creatorName: {type: String, required: true},  
+  creatorName: {type: String, required: true},
   creatorBio: {type: String, required: true},
   ig: {type: String, default:function () {return this.creatorName;} },
   fb: {type: String, default:function () {return this.creatorName;}},

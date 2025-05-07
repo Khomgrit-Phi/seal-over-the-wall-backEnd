@@ -3,9 +3,15 @@ const OrderItemSchema = new Schema({
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     quantity: { type: Number, required: true },
     unitPrice: { type: Number, required: true },
+    totalPrice: { type: Number, default: function () { return this.quantity * this.unitPrice } },
     selectedSize: { type: String, required: true },
     selectedColor: { type: String, required: true }
   }, { _id: true });
+
+  OrderItemSchema.pre("save", function (next) {
+    this.totalPrice = this.quantity * this.unitPrice;
+    next();
+});
 
 
 const OrderSchema = new Schema({
