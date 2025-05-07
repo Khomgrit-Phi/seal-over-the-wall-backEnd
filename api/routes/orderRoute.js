@@ -1,10 +1,11 @@
 import express from "express";
-import { Order, OrderItem } from "../../models/Order";
+import { Order, OrderItem } from "../../models/Order.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
 
-router.post("/order", async (req, res) => {
+router.post("/", async (req, res) => {
     const {userId, addressId, items, status, total, vat, paymentId, } = req.body;
     if (!userId || !addressId || !items || !status || !total || !vat || !paymentId) {
         return res.status(400).json({error: true, message: "The information is not fulfilled"
@@ -12,8 +13,20 @@ router.post("/order", async (req, res) => {
     }
 
     try {
-        const order = new Order ({userId, addressId, items, status, total, vat, paymentId});
+        const order = new Order({
+            userId: new mongoose.Types.ObjectId(userId),
+            addressId: new mongoose.Types.ObjectId(addressId),
+            items: items.map(item => ({
+                ...item,
+                productId: new mongoose.Types.ObjectId(item.productId)
+            })),
+            status,
+            total,
+            vat,
+            paymentId: new mongoose.Types.ObjectId(paymentId)
+        });
         await order.save()
+
         return res.status(201).json({ error: false, order, message: "The order is create successfully" });
 
     } catch (err) {
@@ -21,7 +34,7 @@ router.post("/order", async (req, res) => {
     }
 })
 
-router.get("/order/:orderId", async (req,res) => {
+router.get("/:orderId", async (req,res) => {
     const {orderId} = req.params;
     if (!orderId) {
         return res.status(400).json({error: true,message: "The information is not fulfilled"})
@@ -39,7 +52,7 @@ router.get("/order/:orderId", async (req,res) => {
     }
 })
 
-router.patch("/order/:orderId", async (req, res) => {
+router.patch("/:orderId", async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
@@ -61,7 +74,7 @@ router.patch("/order/:orderId", async (req, res) => {
     }
 });
 
-router.post("/order/orderItem", async (req, res) => {
+router.post("/orderItem", async (req, res) => {
     const {productId, quantity,unitPrice,selectedSize,selectedColor} = req.body;
     if (!productId || !quantity || !unitPrice || !selectedSize || !selectedColor) {
         return res.status(400).json({error: true, message: "The information is not fulfilled"})
@@ -69,7 +82,7 @@ router.post("/order/orderItem", async (req, res) => {
 
     try {
         const orderItem = new OrderItem ({productId ,quantity ,unitPrice ,selectedSize ,selectedColor})
-        await OrderItem.save(orderItem)
+        await OrderItem.save()
         return res.status(200).json({ error:false, orderItem, message: "Order item is create" })
 
     } catch (err) {
@@ -79,7 +92,7 @@ router.post("/order/orderItem", async (req, res) => {
     }
 )
 
-router.post("/order/orderItem", async (req, res) => {
+router.post("/orderItem", async (req, res) => {
     const { productId, quantity, unitPrice, selectedSize, selectedColor } = req.body;
 
     // Check required fields
@@ -97,3 +110,7 @@ router.post("/order/orderItem", async (req, res) => {
         return res.status(500).json({ error: true, message: "Server error", details: err.message });
     }
 });
+
+
+
+export default router
