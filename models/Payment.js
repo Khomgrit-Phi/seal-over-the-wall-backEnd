@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const PaymentSchema = new Schema(
   {
+    orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
     amount: { type: Number, required: true },
     method: { type: String, enum: ["creditCard", "prompPay"], required: true },
     status: {
