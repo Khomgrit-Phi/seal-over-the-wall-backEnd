@@ -1,3 +1,5 @@
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 
 const OrderItemSchema = new Schema({
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
