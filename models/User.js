@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const AddressSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
-    addressName: { type: String, required: true },
+    address: { type: String, required: true },
     specific: { type: String },
     subDistrict: { type: String, required: true },
     district: { type: String, required: true },
