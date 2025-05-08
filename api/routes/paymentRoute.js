@@ -1,32 +1,41 @@
 import express from "express";
 import { Payment } from "../../models/Payment.js";
+import { Order } from "../../models/Order.js";
 import bcrypt from "bcrypt";
 
 const router = express.Router();
 
 // Create new payment document
-router.post("/auth/Payment", async (req, res) => {
-    const { amount, method, status, cardName, cardNumber, cvv, paymentData } = req.body;
-    if ( !amount || !method || !status || !cardName || !cardNumber || !cvv || !paymentData ) {
+router.post("/", async (req, res) => {
+    const { orderId, amount, method, status, cardName, cardNumber, cvv, paymentData } = req.body;
+    console.log(req.body);
+    if ( !orderId || !amount || !method || !status || !cardName || !cardNumber || !cvv || !paymentData ) {
         return res.status(400).json({
             error: true,
             message: "All fields are required"
         });
     }
     try {
-        const existingPayment = await User.findOne({cardNumber});
-        if(existingPayment) {
-            res.status(409).json({
+        const existingOrder = await Order.findOne({orderId});
+        if(existingOrder) {
+            res.status(404).json({
                 error: true,
-                message : "Card is already in use"
+                message : "No Order found"
             });
         }
-        const payment = new Payment({fullName, email, password});
+        const payment = new Payment({ orderId, amount, method, status, cardName, cardNumber, cvv, paymentData});
 
-        await user.save();
+        await payment.save();
         res.status(201).json({
             error : false,
-            message : "User register succesful"
+            message : "Payment register succesful"
         })
-    } catch {}
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Sever error"
+        })
+    }
 });
+
+export default router;

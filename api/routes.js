@@ -1,5 +1,9 @@
 import express from "express"
-import productRoute from "./routes/productRoute"
+import productRoute from "./routes/productRoute.js"
+import userRoute from "./routes/userRoute.js";
+import cartRoute from "./routes/cartRoute.js";
+import paymentRoute from "./routes/paymentRoute.js";
+import orderRoute from "./routes/orderRoute.js";
 
 
 const router = express.Router()

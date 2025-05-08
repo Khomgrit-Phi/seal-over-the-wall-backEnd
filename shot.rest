@@ -1,0 +1,14 @@
+### create a payment
+POST http://localhost:6000/payment
+Content-type: application/json
+
+{
+    "orderId": "681b33538d95bd1c8e098fc4",
+    "amount": "2,000 THB",
+    "method": "prompPay",
+    "status": "completed",
+    "cardName": "Bass",
+    "cardNumber": "1234567890",
+    "cvv": "123",
+    "paymentDate": "2025-01-02"
+}
