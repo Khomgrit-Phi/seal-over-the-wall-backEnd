@@ -56,7 +56,6 @@ router.patch("/:paymentId", async (req, res) => {
         const existingPayment = await Payment.findOne({ _id: paymentId });
 
         if(!existingPayment) {
-            console.log(existingPayment)
             return res.status(404).json({
                 err: true,
                 message: "Payment not found or Incorrect payment ID"
