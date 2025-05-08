@@ -7,9 +7,9 @@ const router = express.Router();
 
 // Create new payment document
 router.post("/", async (req, res) => {
-    const { orderId, amount, method, status, cardName, cardNumber, cvv, paymentData } = req.body;
-    console.log(req.body);
-    if ( !orderId || !amount || !method || !status || !cardName || !cardNumber || !cvv || !paymentData ) {
+    const { orderId, amount, method, status, cardName, cardNumber, cvv } = req.body;
+
+    if ( !orderId || !amount || !method || !status || !cardName || !cardNumber || !cvv ) {
         return res.status(400).json({
             error: true,
             message: "All fields are required"
@@ -23,17 +23,63 @@ router.post("/", async (req, res) => {
                 message : "No Order found"
             });
         }
-        const payment = new Payment({ orderId, amount, method, status, cardName, cardNumber, cvv, paymentData});
+        const payment = new Payment({ orderId, amount, method, status, cardName, cardNumber, cvv });
 
         await payment.save();
         res.status(201).json({
             error : false,
-            message : "Payment register succesful"
+            message : "Payment register succesful",
+            payment
         })
     } catch (err) {
         return res.status(500).json({
             error: true,
-            message: "Sever error"
+            message: "Sever error",
+            detail: err.message
+        })
+    }
+});
+
+//Update order status ("pending", "completed", "failed", "refunded")
+router.patch("/:paymentId", async (req, res) => {
+    const { paymentId } = req.params;
+    const { status } = req.body;
+
+    if (!status ) {
+        return res.status(400).json({
+            error: true,
+            message: "Status not found"
+        })
+    }
+
+    try {
+        const existingPayment = await Payment.findOne({ _id: paymentId });
+
+        if(!existingPayment) {
+            console.log(existingPayment)
+            return res.status(404).json({
+                err: true,
+                message: "Payment not found or Incorrect payment ID"
+            });
+        }
+
+        const updatedPayment = await Payment.updateOne(
+            { _id: paymentId },
+            { $set: { status: status } },
+            { new: true }
+        )
+        return res.status(200).json({
+            err : false,
+            message: "Update Successed",
+            detail: updatedPayment
+        })
+
+
+    } catch (err) {
+        return res.status(500).json({
+            error: true,
+            message: "Sever error",
+            detail: err.message
         })
     }
 });
