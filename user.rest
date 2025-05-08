@@ -1,0 +1,22 @@
+POST http://localhost:6000/user/register
+Content-Type: application/json
+
+{
+  "firstName":   "Ton-7",
+  "email":       "ton-7@example.com",
+  "password":    "12345",
+  "phoneNumber": "1234567890",
+  "userName":    "Ton-1",
+  "lastName":    "Ton-2",
+  "addresses": [
+    {
+      "address":     "1234",
+      "specific":    "My house",
+      "subDistrict": "AY",
+      "district":    "AYT",
+      "city":        "ATYY",
+      "postal":      "13000",
+      "isDefault":   true
+    }
+  ]
+}

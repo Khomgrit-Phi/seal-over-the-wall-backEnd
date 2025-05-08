@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 
 const ColorSchema = new Schema({
     colorName: { type: String, required: true },

@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const AddressSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
-    addressName: { type: String, required: true },
+    address: { type: String, required: true },
     specific: { type: String },
     subDistrict: { type: String, required: true },
     district: { type: String, required: true },
@@ -14,6 +14,15 @@ const AddressSchema = new Schema(
   },
   { _id: true }
 );
+
+const CreatorSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  creatorName: {type: String, required: true},
+  creatorBio: {type: String, required: true},
+  ig: {type: String, default:function () {return this.creatorName;} },
+  fb: {type: String, default:function () {return this.creatorName;}},
+  x: {type: String, default:function () {return this.creatorName;}}
+})
 
 const UserSchema = new Schema({
   email: { type: String, required: true, unique: true },
@@ -25,18 +34,11 @@ const UserSchema = new Schema({
   addresses: { type: [AddressSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   isCreator: { type: Boolean, default: false },
-  creatorInfo: { type: {CreatorSchema}}
+  creatorInfo: CreatorSchema
 });
 
 
-const CreatorSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User' },
-  creatorName: {type: String, required: true},
-  creatorBio: {type: String, required: true},
-  ig: {type: String, default:function () {return this.creatorName;} },
-  fb: {type: String, default:function () {return this.creatorName;}},
-  x: {type: String, default:function () {return this.creatorName;}}
-})
+
 
 // Hash password before saving
 UserSchema.pre("save", async function (next) {

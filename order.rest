@@ -1,0 +1,35 @@
+
+### Post an order
+POST http://localhost:6000/order
+Content-Type: application/json
+
+{
+  "userId": "644f1e58f9f8b915d5c7d9a1",
+  "addressId": "644f1e58f9f8b915d5c7d9a2",
+  "items": [
+    {
+      "productId": "644f1e58f9f8b915d5c7d9a3",
+      "quantity": 5,
+      "unitPrice": 499,
+      "selectedSize": "s",
+      "selectedColor": "black"
+    }
+  ],
+  "status": "pending",
+  "total": 40,
+  "vat": 7,
+  "paymentId": "644f1e58f9f8b915d5c7d9a4"
+}
+
+
+
+### Get a specific order (by object ID)
+GET http://localhost:6000/order/681b33538d95bd1c8e098fc4
+
+### Patch order'status (by object ID)
+PATCH  http://localhost:6000/order/681b33538d95bd1c8e098fc4
+Content-Type: application/json
+
+{
+  "status":"paid"
+}
