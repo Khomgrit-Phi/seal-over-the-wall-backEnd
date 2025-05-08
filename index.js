@@ -5,7 +5,6 @@ import mongoose from "mongoose"
 import cookieParser from "cookie-parser";
 import routes from "./api/routes.js";
 
-
 dotenv.config()
 const PORT = process.env.PORT || 0
 
@@ -14,7 +13,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+
+
 app.use("/",routes);
+
 (async () => {
     try {
         // Connect to MongoDB via Mongoose

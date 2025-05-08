@@ -1,0 +1,49 @@
+### REGISTER
+POST http://localhost:6000/user/sign-up
+Content-Type: application/json
+
+{
+  "firstName":   "Ton-17",
+  "email":       "ton-17@example.com",
+  "password":    "12345",
+  "phoneNumber": "1234567890",
+  "userName":    "Ton-17",
+  "lastName":    "Ton-17",
+  "addresses": [
+    {
+      "address":     "1234",
+      "specific":    "My house",
+      "subDistrict": "AY",
+      "district":    "AYT",
+      "city":        "ATYY",
+      "postal":      "13000",
+      "isDefault":   true
+    }
+  ]
+}
+
+### SIGN-IN
+POST http://localhost:6000/user/sign-in
+Content-Type: application/json
+
+{
+  "email": "ton-17@example.com",
+  "password": "12345"
+}
+
+
+### Add New Address
+
+POST http://localhost:6000/user/new-address
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFjNDg3YzgyZGZkM2VkZTEwNzI3ZTMiLCJlbWFpbCI6InRvbi0xN0BleGFtcGxlLmNvbSIsImlhdCI6MTc0NjY5MzMwNCwiZXhwIjoxNzQ3Mjk4MTA0fQ.S7VcpGZy0_heKNrLtg8O5U-UDp6aOHYtp--Rc_gCoTw
+Content-Type: application/json
+
+{
+  "address": "5678",
+  "specific": "Apartment 4",
+  "subDistrict": "XYZ",
+  "district": "ZZ",
+  "city": "Metropolis",
+  "postal": "14000",
+  "isDefault": false
+}

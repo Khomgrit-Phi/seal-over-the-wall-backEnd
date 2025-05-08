@@ -1,3 +1,6 @@
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+
 
 const DiyItemSchema = new Schema({
     DiyId: { type: Schema.Types.ObjectId, ref: 'Diy', required: true },
