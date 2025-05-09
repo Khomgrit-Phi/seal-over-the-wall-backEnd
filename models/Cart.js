@@ -9,7 +9,7 @@ const CartItemSchema = new Schema({
     totalPrice: { type: Number, default: function () { return this.quantity * this.unitPrice } },
     selectedSize: { type: String, required: true },
     selectedColor: { type: String, required: true },
-    addedAt: { type: Date, default: Date.now }
+    addedAt: { type: Date, default: Date.now },
   }, { _id: true });
 
   CartItemSchema.pre("save", function (next) {

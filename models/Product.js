@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 const ColorSchema = new Schema({
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     colorName: { type: String, required: true },
     colorCode: { type: String, required: true },
     image: { type: [String], required: true },
@@ -10,7 +11,7 @@ const ColorSchema = new Schema({
 const ProductSchema = new Schema({
     productType: { type: String, required: true },
     styleName: { type: String, required: true },
-    title: { type: String, required:true, default: {styleName}+' - '+{productType} },
+    title: { type: String, required:true, default: function () { return this.styleName +" - " + this.productType } },
     description: { type: String },
     price: { type: Number, default: 499, required:true },
     size: { type: [String], required: true },
