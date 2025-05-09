@@ -1,0 +1,29 @@
+### Test posting cart
+POST http://localhost:6000/cart
+Content-Type: application/json
+
+{
+    "userId": "681b181c29c07dee5cc56553",
+    "items": [  {"cartId": "",
+                "productId": ,
+                "quantity": 2,
+                "unitPrice": 499,
+                "selectedSize": "m",
+                "selectedColor": "black"},
+                {"cartId": "",
+                "productId": ,
+                "quantity": 2,
+                "unitPrice": 499,
+                "selectedSize": "m",
+                "selectedColor": "black"},
+                {"cartId": "",
+                "productId": ,
+                "quantity": 2,
+                "unitPrice": 499,
+                "selectedSize": "m",
+                "selectedColor": "black"},
+            
+            ],
+    "status": "active",
+
+}
