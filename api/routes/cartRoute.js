@@ -7,7 +7,7 @@ const router = express.Router();
 //Create a cart
 router.post("/", async (req, res) => {
   const {
-    sessionId = " ",
+    sessionId = "",
     userId,
     items = [],
     status,
@@ -15,12 +15,10 @@ router.post("/", async (req, res) => {
     vat = 7,
   } = req.body;
   if (!userId || !status) {
-    return res.status(400).json({
-      error: true,
-      message: "The information is not fulfilled",
-    });
+    return res
+      .status(400)
+      .json({ error: true, message: "The information is not fulfilled" });
   }
-
   try {
     const cart = new Cart({
       sessionId,
@@ -149,52 +147,6 @@ router.post("/:cartId/items", async (req, res) => {
   }
 });
 
-// Remove item from cart
-router.delete("/:cartId/items/:itemId", async (req, res) => {
-  const { cartId, itemId } = req.params;
-
-  try {
-    const cart = await Cart.findById(cartId);
-    if (!cart) {
-      return res.status(404).json({
-        error: true,
-        message: "Cart not found",
-      });
-    }
-
-    const itemIndex = cart.items.findIndex(
-      (item) => item._id.toString() === itemId
-    );
-    if (itemIndex === -1) {
-      return res.status(404).json({
-        error: true,
-        message: "Item not found in cart",
-      });
-    }
-
-    const itemTotal = cart.items[itemIndex].totalPrice;
-
-    cart.items.splice(itemIndex, 1);
-
-    cart.total -= itemTotal;
-    cart.updatedAt = new Date();
-
-    await cart.save();
-
-    return res.status(200).json({
-      error: false,
-      cart,
-      message: "Item removed from cart successfully",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      error: true,
-      message: "Server error",
-      details: err.message,
-    });
-  }
-});
-
 //Delete an cart-item and update cart total price
 router.delete("/cartItem/:itemId", async (req, res) => {
   const { itemId } = req.params;
@@ -230,6 +182,31 @@ router.delete("/cartItem/:itemId", async (req, res) => {
       .json({ error: true, message: "Server error", details: err.message });
   }
 });
+//Get a populated cart
+router.get("populated/:userId", async (req, res) => {
+  try {
+    const userId = req.params; // Assuming you have user authentication
+
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      model: "Product",
+    });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    res.status(200).json(cart);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching cart", error: error.message });
+  }
+});
+
+//Update when user added cart-item to cart
+
+//Create a cart-item to when user added to cart
 
 // Update color'item
 router.patch("/:cartId/items/:itemId/color", async (req, res) => {
@@ -374,68 +351,6 @@ router.patch("/:cartId/items/:itemId/quantity", async (req, res) => {
       cart,
       item,
       message: "Item quantity updated successfully",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      error: true,
-      message: "Server error",
-      details: err.message,
-    });
-  }
-});
-//Update size & color & quantity
-router.patch("/cartItem/:itemId", async (req, res) => {
-  const { itemId } = req.params;
-  const { selectedSize, selectedColor, quantity } = req.body;
-
-  // Check for at least one field to update
-  if (!selectedSize && !selectedColor && !quantity) {
-    return res.status(400).json({
-      error: true,
-      message: "No update fields provided",
-    });
-  }
-
-  try {
-    // Find the existing cart item
-    const cartItem = await CartItem.findById(itemId);
-    if (!cartItem) {
-      return res.status(404).json({
-        error: true,
-        message: "cart item not found",
-      });
-    }
-
-    // Calculate the difference in the total price if the quantity changes
-    const oldTotal = cartItem.totalPrice;
-    if (quantity) {
-      cartItem.quantity = quantity;
-      cartItem.totalPrice = cartItem.quantity * cartItem.unitPrice;
-    }
-
-    // Update size and color if provided
-    if (selectedSize) {
-      cartItem.selectedSize = selectedSize;
-    }
-    if (selectedColor) {
-      cartItem.selectedColor = selectedColor;
-    }
-
-    // Save the updated cart item
-    await cartItem.save();
-
-    // Update the associated cart's total
-    const difference = cartItem.totalPrice - oldTotal;
-    await Cart.findByIdAndUpdate(
-      cartItem.cartId,
-      { $inc: { total: difference } }, // Update total with the difference
-      { new: true }
-    );
-
-    return res.status(200).json({
-      error: false,
-      cartItem,
-      message: "Cart item updated successfully",
     });
   } catch (err) {
     return res.status(500).json({
