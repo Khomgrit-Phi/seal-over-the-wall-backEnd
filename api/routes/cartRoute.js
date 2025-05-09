@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
           productId: new mongoose.Types.ObjectId(item.productId),
           selectedSize: item.selectedSize,
           selectedColor: item.selectedColor,
+          selectedImage: item.selectedImage,
           unitPrice: item.unitPrice || 0,
         })) || [], // Handle case where items might be undefined
       status,
@@ -96,9 +97,16 @@ router.post("/:cartId/items", async (req, res) => {
     unitPrice,
     selectedColor,
     selectedSize,
+    selectedImage,
   } = req.body;
 
-  if (!productId || !unitPrice || !selectedColor || !selectedSize) {
+  if (
+    !productId ||
+    !unitPrice ||
+    !selectedColor ||
+    !selectedSize ||
+    !selectedImage
+  ) {
     return res.status(400).json({
       error: true,
       message: "Please complete all required product details",
@@ -116,11 +124,13 @@ router.post("/:cartId/items", async (req, res) => {
 
     // Create new item
     const newItem = {
+      cartId: cart._id,
       productId: new mongoose.Types.ObjectId(productId),
       quantity,
       unitPrice,
       selectedSize,
       selectedColor,
+      selectedImage,
     };
 
     // Update item in cart

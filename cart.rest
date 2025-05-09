@@ -3,29 +3,57 @@ POST http://localhost:6000/cart
 Content-Type: application/json
 
 {
-  "sessionId": "session1",
-  "userId": "681b181c29c07dee5cc56553",  
-  "items": [
-    {
-      "productId": "681c1957b03de96092fef042",  
-      "selectedSize": "M",
-      "selectedColor": "white",
-      "quantity": 1,
-      "unitPrice": 499,
-      "totalPrice": 499
-    }
-  ],
+  "sessionId": " ",
+  "userId": "681ba0a2ee6a605774ea2bdc",
+  "items": [ ],
   "status": "active",
-  "total": 499,
+  "total": 0,
   "vat": 7
 }
 
-### Get a cart by ID
-GET http://localhost:6000/cart/:cartId
+### Get a cartID
+GET http://localhost:6000/cart/681dd3e8eac991d663bdb2a7
 
 ### Add item to cartID
-POST http://localhost:6000/:cartId/items
+POST http://localhost:6000/cart/681dd3e8eac991d663bdb2a7/items
+Content-Type: application/json
 
-### Remove item from cart
-DELETE http://localhost:6000/cart/:cartId/items/:itemId 
+{
+  "productId": "681dadf6fc676010cf0d4a09",
+  "selectedSize": "m",
+  "selectedColor": "blue",
+  "selectedImage": "src/assets/images/Products/shirt/prove/prove-shirt-blue-front.png",
+  "quantity": 1,
+  "unitPrice": 499
+}
+
+### Delete an cart-item and update cart total price
+DELETE http://localhost:6000/cart/cartItem/681dbd3f7a254bc8ee0120e3
+
+### Get a populated cart
+GET http://localhost:6000/cart/populated/681c487c82dfd3ede10727e3
+
+### Update color'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/color
+Content-Type: application/json
+
+{
+  "selectedColor": "White"
+}
+
+### Update size'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/size
+Content-Type: application/json
+
+{
+  "items": [{"selectedSize": "S"}]
+}
+
+### Update quantity'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/quantity
+Content-Type: application/json
+
+{
+  "items": [{"quantity": 2}]
+}
 
