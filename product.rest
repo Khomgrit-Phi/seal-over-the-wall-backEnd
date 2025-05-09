@@ -1,0 +1,17 @@
+###
+POST http://localhost:6000/product
+Content-Type: application/json
+
+{
+    "styleName": "Prove Them Wrong",
+    "productType": "shirt",
+    "description": "Go further, we can be even worse.",
+    "price": 499,
+    "sizes": ["s", "m", "l"],
+    "colors": ["black", "blue", "gray", "white"],
+    "images": ["src/assets/images/Products/t-shirt/prove/prove-shirt-black-front.png",
+            "src/assets/images/Products/t-shirt/prove/prove-shirt-blue-front.png",
+            "src/assets/images/Products/t-shirt/prove/prove-shirt-gray-front.png",
+            "src/assets/images/Products/t-shirt/prove/prove-shirt-white-front.png"
+            ]
+}
