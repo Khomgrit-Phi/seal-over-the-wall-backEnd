@@ -6,7 +6,7 @@ const router = express.Router();
 
 //Create a cart
 router.post("/", async (req, res) => {
-    const {sessionId ,userId, items =[], status, total=0, vat=7,  } = req.body;
+    const {sessionId="" ,userId, items =[], status, total=0, vat=7,  } = req.body;
     if (!userId || !status) {
         return res.status(400).json({error: true, message: "The information is not fulfilled"
         })
@@ -53,43 +53,35 @@ router.get("/:cartId", async (req,res) => {
     }
 })
 
-//Delete an cart-item and update cart total price
-router.delete("/cartItem/:itemId", async (req, res) => {
-    const { itemId } = req.params;
-
+//Get a populated cart
+router.get("populated/:userId", async (req, res) => {
     try {
-        // Find the item to get its total price before deletion
-        const cartItem = await CartItem.findById(itemId);
-        if (!cartItem) {
-            return res.status(404).json({ error: true, message: "cart item not found" });
-        }
+      const userId = req.params; // Assuming you have user authentication
 
-        const itemTotal = cartItem.totalPrice;
+      const cart = await Cart.findOne({ userId }).populate({
+        path: 'items.productId',
+        model: 'Product',
+      });
 
-        // Delete the cart item
-        await CartItem.findByIdAndDelete(itemId);
+      if (!cart) {
+        return res.status(404).json({ message: 'Cart not found' });
+      }
 
-        // Decrement the total from the associated cart
-        await Cart.findByIdAndUpdate(
-            cartItem.cartId,
-            { $inc: { total: -itemTotal } },  // Subtract the item total from the cart total
-            { new: true }                     // Return the updated cart
-        );
-
-        return res.status(200).json({ 
-            error: false, 
-            message: "cart item deleted and total updated" 
-        });
-
-    } catch (err) {
-        return res.status(500).json({ error: true, message: "Server error", details: err.message });
+      res.status(200).json(cart);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching cart', error: error.message });
     }
-});
+  })
+
+
+//Update when user added cart-item to cart
+
+//Create a cart-item to when user added to cart
 
 //Update size & color & quantity
 router.patch("/cartItem/:itemId", async (req, res) => {
     const { itemId } = req.params;
-    const { selectedSize, selectedColor, quantity } = req.body;
+    const { selectedSize, selectedColor, quantity = 0 } = req.body;
 
     // Check for at least one field to update
     if (!selectedSize && !selectedColor && !quantity) {
@@ -145,6 +137,41 @@ router.patch("/cartItem/:itemId", async (req, res) => {
         });
     }
 });
+
+//Delete an cart-item and update cart total price
+router.delete("/cartItem/:itemId", async (req, res) => {
+    const { itemId } = req.params;
+
+    try {
+        // Find the item to get its total price before deletion
+        const cartItem = await CartItem.findById(itemId);
+        if (!cartItem) {
+            return res.status(404).json({ error: true, message: "cart item not found" });
+        }
+
+        const itemTotal = cartItem.totalPrice;
+
+        // Delete the cart item
+        await CartItem.findByIdAndDelete(itemId);
+
+        // Decrement the total from the associated cart
+        await Cart.findByIdAndUpdate(
+            cartItem.cartId,
+            { $inc: { total: -itemTotal } },  // Subtract the item total from the cart total
+            { new: true }                     // Return the updated cart
+        );
+
+        return res.status(200).json({ 
+            error: false, 
+            message: "cart item deleted and total updated" 
+        });
+
+    } catch (err) {
+        return res.status(500).json({ error: true, message: "Server error", details: err.message });
+    }
+});
+
+
 
 //Batch deletion
 // Batch delete cart items by IDs
