@@ -200,11 +200,10 @@ router.delete("/:cartId/items/:itemId", async (req, res) => {
       .json({ error: true, message: "Server error", details: err.message });
   }
 });
-
-//-------------------------------Get a populated cart-------------------------------
+//Get a populated cart
 router.get("/populated/:userId", async (req, res) => {
   try {
-    const userId = req.params.userId; //add .userId to find the userId value directly
+    const {userId} = req.params; // Assuming you have user authentication
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
@@ -215,7 +214,8 @@ router.get("/populated/:userId", async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    res.status(200).json(cart);
+    console.log(cart)
+    res.status(200).json({error:false,cart});
   } catch (error) {
     console.error("Error in /populated/:userId route:", error);
     res

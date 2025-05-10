@@ -3,12 +3,12 @@ POST http://localhost:6000/user/sign-up
 Content-Type: application/json
 
 {
-  "firstName":   "Somchai",
-  "email":       "sch@example.com",
-  "password":    "234567",
-  "phoneNumber": "096666666",
-  "userName":    "User1",
-  "lastName":    "Kitkardee",
+  "firstName":   "Ton-97",
+  "email":       "ton-97@example.com",
+  "password":    "12345",
+  "phoneNumber": "1234567890",
+  "userName":    "Ton-1",
+  "lastName":    "Ton-2",
   "addresses": [
     {
       "address":     "62/1 Soi Ekkachai 116",
