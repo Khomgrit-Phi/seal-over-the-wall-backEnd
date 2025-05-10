@@ -27,3 +27,7 @@ Content-Type: application/json
     "status": "active",
 
 }
+
+
+### GET cart
+GET http://localhost:3000/cart/populated/681c487c82dfd3ede10727e3

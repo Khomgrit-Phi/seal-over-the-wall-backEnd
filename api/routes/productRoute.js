@@ -21,4 +21,45 @@ router.post("", async (req, res) => {
     }
 })
 
+router.get("/", async (req, res) => {
+    const {productId} = req.body
+    const product = Product.findOne({productId})
+    if(!product) {
+        return res.status(404).json({
+            error: true,
+            message: "Product not found"
+        })
+    }
+
+    try{res.status(200).json({
+            error: false,
+            product,
+            message: "product found"})
+    } catch(err) {
+        return res.status(500).json({error: true, message: "Server error", details: err.message })
+        }
+
+})
+
+
+router.get("/productId", async (req, res) => {
+    const {productId} = req.body
+    const product = Product.findOne({productId})
+    if(!product) {
+        return res.status(404).json({
+            error: true,
+            message: "Product not found"
+        })
+    }
+    try{
+    res.status(200).json({
+        error: false,
+        product,
+        message: "product found"
+    })
+    } catch(err) {
+    return res.status(500).json({error: true, message: "Server error", details: err.message })
+    }
+    })
+
 export default router

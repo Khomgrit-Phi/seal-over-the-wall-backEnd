@@ -9,9 +9,13 @@ dotenv.config()
 const PORT = process.env.PORT || 0
 
 const app = express();
+const corsOptions = {
+    origin: 'http://localhost:5173', //Can replace with real vercel app
+    credentials: true,
+};
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use("/",routes);
 

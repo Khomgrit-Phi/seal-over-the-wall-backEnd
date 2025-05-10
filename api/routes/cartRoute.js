@@ -183,20 +183,21 @@ router.delete("/cartItem/:itemId", async (req, res) => {
   }
 });
 //Get a populated cart
-router.get("populated/:userId", async (req, res) => {
+router.get("/populated/:userId", async (req, res) => {
   try {
-    const userId = req.params; // Assuming you have user authentication
+    const {userId} = req.params; // Assuming you have user authentication
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
-      model: "Product",
+      model: "Product1",
     });
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    res.status(200).json(cart);
+    console.log(cart)
+    res.status(200).json({error:false,cart});
   } catch (error) {
     res
       .status(500)
