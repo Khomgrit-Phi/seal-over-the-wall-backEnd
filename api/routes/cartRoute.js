@@ -53,9 +53,9 @@ router.post("/", async (req, res) => {
 });
 
 //-------------------------------Get a cart--------------------------------------
-router.get("/:cartId", async (req, res) => {
-  const { cartId } = req.params;
-  if (!cartId) {
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+  if (!userId) {
     return res.status(400).json({
       error: true,
       message: "The information is not fulfilled",
@@ -63,7 +63,7 @@ router.get("/:cartId", async (req, res) => {
   }
 
   try {
-    const existCart = await Cart.findById(cartId);
+    const existCart = await Cart.findOne(userId);
     if (!existCart) {
       return res.status(404).json({
         error: true,
@@ -157,7 +157,7 @@ router.post("/:cartId/items", async (req, res) => {
 //Add the cartId to find the cart first, and then find the item within that cart.
 router.delete("/:cartId/items/:itemId", async (req, res) => {
   const { cartId, itemId } = req.params;
-  console.log(`cartId: ${cartId}, itemId: ${itemId}`);
+  // console.log(`cartId: ${cartId}, itemId: ${itemId}`);
 
   try {
     // check that the cart exists
