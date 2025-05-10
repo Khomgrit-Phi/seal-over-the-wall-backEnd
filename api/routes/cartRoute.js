@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
-//Create a cart
+//-------------------------------Create a cart------------------------------------
 router.post("/", async (req, res) => {
   const {
     sessionId = "",
@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
           productId: new mongoose.Types.ObjectId(item.productId),
           selectedSize: item.selectedSize,
           selectedColor: item.selectedColor,
+          selectedImage: item.selectedImage,
           unitPrice: item.unitPrice || 0,
         })) || [], // Handle case where items might be undefined
       status,
@@ -51,7 +52,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-//Get a cart
+//-------------------------------Get a cart--------------------------------------
 router.get("/:cartId", async (req, res) => {
   const { cartId } = req.params;
   if (!cartId) {
@@ -62,11 +63,7 @@ router.get("/:cartId", async (req, res) => {
   }
 
   try {
-    const existCart = await Cart.findById(cartId).populate({
-      path: "items.productId",
-      select: "image title",
-    });
-
+    const existCart = await Cart.findById(cartId);
     if (!existCart) {
       return res.status(404).json({
         error: true,
@@ -87,7 +84,7 @@ router.get("/:cartId", async (req, res) => {
   }
 });
 
-// Add item to cart
+//------------------------------- Add item to cart-------------------------------
 router.post("/:cartId/items", async (req, res) => {
   const { cartId } = req.params;
   const {
@@ -96,9 +93,16 @@ router.post("/:cartId/items", async (req, res) => {
     unitPrice,
     selectedColor,
     selectedSize,
+    selectedImage,
   } = req.body;
 
-  if (!productId || !unitPrice || !selectedColor || !selectedSize) {
+  if (
+    !productId ||
+    !unitPrice ||
+    !selectedColor ||
+    !selectedSize ||
+    !selectedImage
+  ) {
     return res.status(400).json({
       error: true,
       message: "Please complete all required product details",
@@ -116,11 +120,13 @@ router.post("/:cartId/items", async (req, res) => {
 
     // Create new item
     const newItem = {
+      cartId: cart._id,
       productId: new mongoose.Types.ObjectId(productId),
       quantity,
       unitPrice,
       selectedSize,
       selectedColor,
+      selectedImage,
     };
 
     // Update item in cart
@@ -147,49 +153,62 @@ router.post("/:cartId/items", async (req, res) => {
   }
 });
 
-//Delete an cart-item and update cart total price
-router.delete("/cartItem/:itemId", async (req, res) => {
-  const { itemId } = req.params;
+//-------------------------------Delete an cart-item and update cart total price-------------------------------
+//Add the cartId to find the cart first, and then find the item within that cart.
+router.delete("/:cartId/items/:itemId", async (req, res) => {
+  const { cartId, itemId } = req.params;
+  console.log(`cartId: ${cartId}, itemId: ${itemId}`);
 
   try {
-    // Find the item to get its total price before deletion
-    const cartItem = await CartItem.findById(itemId);
-    if (!cartItem) {
-      return res
-        .status(404)
-        .json({ error: true, message: "cart item not found" });
+    // check that the cart exists
+    const cart = await Cart.findById(cartId);
+    if (!cart) {
+      return res.status(404).json({ error: true, message: "Cart not found" });
     }
 
-    const itemTotal = cartItem.totalPrice;
-
-    // Delete the cart item
-    await CartItem.findByIdAndDelete(itemId);
-
-    // Decrement the total from the associated cart
-    await Cart.findByIdAndUpdate(
-      cartItem.cartId,
-      { $inc: { total: -itemTotal } }, // Subtract the item total from the cart total
-      { new: true } // Return the updated cart
+    const embeddedItemIndex = cart.items.findIndex(
+      (item) => item._id.toString() === itemId
     );
 
-    return res.status(200).json({
-      error: false,
-      message: "cart item deleted and total updated",
+    if (embeddedItemIndex >= 0) {
+      // Store the price of that item first; if you delete it, you won't know its price
+      const itemTotal = cart.items[embeddedItemIndex].totalPrice;
+
+      // delete item from arry
+      cart.items.splice(embeddedItemIndex, 1);
+
+      // update Total
+      cart.total -= itemTotal;
+
+      await cart.save();
+
+      return res.status(200).json({
+        error: false,
+        message: "Cart item deleted from embedded items and cart total updated",
+        updatedCart: cart,
+      });
+    }
+
+    return res.status(404).json({
+      error: true,
+      message: "Cart item not found in embedded in Cart",
     });
   } catch (err) {
+    console.error("Error in delete cart item:", err);
     return res
       .status(500)
       .json({ error: true, message: "Server error", details: err.message });
   }
 });
-//Get a populated cart
-router.get("populated/:userId", async (req, res) => {
+
+//-------------------------------Get a populated cart-------------------------------
+router.get("/populated/:userId", async (req, res) => {
   try {
-    const userId = req.params; // Assuming you have user authentication
+    const userId = req.params.userId; //add .userId to find the userId value directly
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
-      model: "Product",
+      model: "Product1",
     });
 
     if (!cart) {
@@ -198,6 +217,7 @@ router.get("populated/:userId", async (req, res) => {
 
     res.status(200).json(cart);
   } catch (error) {
+    console.error("Error in /populated/:userId route:", error);
     res
       .status(500)
       .json({ message: "Error fetching cart", error: error.message });
@@ -208,7 +228,7 @@ router.get("populated/:userId", async (req, res) => {
 
 //Create a cart-item to when user added to cart
 
-// Update color'item
+// -------------------------------Update color'item-------------------------------
 router.patch("/:cartId/items/:itemId/color", async (req, res) => {
   const { cartId, itemId } = req.params;
   const { selectedColor } = req.body;
@@ -257,7 +277,7 @@ router.patch("/:cartId/items/:itemId/color", async (req, res) => {
     });
   }
 });
-// Update size'item
+// -------------------------------Update size'item-------------------------------
 router.patch("/:cartId/items/:itemId/size", async (req, res) => {
   const { cartId, itemId } = req.params;
   const { selectedSize } = req.body;
@@ -307,7 +327,7 @@ router.patch("/:cartId/items/:itemId/size", async (req, res) => {
   }
 });
 
-//Update quantity
+//-------------------------------Update quantity-------------------------------
 router.patch("/:cartId/items/:itemId/quantity", async (req, res) => {
   const { cartId, itemId } = req.params;
   const { quantity } = req.body;

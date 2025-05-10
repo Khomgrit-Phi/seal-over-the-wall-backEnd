@@ -6,23 +6,44 @@ import { verify } from "../../middlewares/verify.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-
 const router = express.Router();
 
-router.post("/register", authUser, async (req, res) => {
-  const { firstName, email, password, phoneNumber, userName, lastName, addresses } = req.body;
+router.post("/sign-up", authUser, async (req, res) => {
+  const {
+    firstName,
+    email,
+    password,
+    phoneNumber,
+    userName,
+    lastName,
+    addresses,
+  } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ error: true, message: "Email already in use" });
+      return res
+        .status(409)
+        .json({ error: true, message: "Email already in use" });
     }
 
-    const user = await User.create({ firstName, email, password, phoneNumber, userName, lastName, addresses });
+    const user = await User.create({
+      firstName,
+      email,
+      password,
+      phoneNumber,
+      userName,
+      lastName,
+      addresses,
+    });
 
-    res.status(201).json({ error: false, message: "User registered successfully", user });
+    res
+      .status(201)
+      .json({ error: false, message: "User registered successfully", user });
   } catch (err) {
-    res.status(500).json({ error: true, message: "Server error", details: err.message });
+    res
+      .status(500)
+      .json({ error: true, message: "Server error", details: err.message });
   }
 });
 
@@ -31,18 +52,24 @@ router.post("/register", authUser, async (req, res) => {
 router.post("/sign-in", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ err: true, message: "Email and password are required." });
+    return res
+      .status(400)
+      .json({ err: true, message: "Email and password are required." });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      return res.status(401).json({ err: true, message: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ err: true, message: "Invalid credentials." });
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      return res.status(401).json({ err: true, message: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ err: true, message: "Invalid credentials." });
     }
 
     const token = jwt.sign(
@@ -59,14 +86,13 @@ router.post("/sign-in", async (req, res) => {
         id: existingUser._id,
         email: existingUser.email,
         userName: existingUser.userName,
-      }
+      },
     });
-
   } catch (err) {
     res.status(500).json({
       error: true,
       message: "Server error",
-      details: err.message
+      details: err.message,
     });
   }
 });
@@ -74,18 +100,13 @@ router.post("/sign-in", async (req, res) => {
 // Add New Address
 
 router.post("/new-address", verify, async (req, res) => {
-  const {
-    address,
-    specific,
-    subDistrict,
-    district,
-    city,
-    postal,
-    isDefault
-  } = req.body;
+  const { address, specific, subDistrict, district, city, postal, isDefault } =
+    req.body;
 
   if (!address || !specific || !subDistrict || !district || !city || !postal) {
-    return res.status(400).json({ error: true, message: "Missing address fields" });
+    return res
+      .status(400)
+      .json({ error: true, message: "Missing address fields" });
   }
 
   try {
@@ -101,7 +122,7 @@ router.post("/new-address", verify, async (req, res) => {
       district,
       city,
       postal,
-      isDefault: isDefault || false
+      isDefault: isDefault || false,
     });
 
     await user.save();
@@ -109,11 +130,12 @@ router.post("/new-address", verify, async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Address added successfully",
-      addresses: user.addresses
+      addresses: user.addresses,
     });
-
   } catch (err) {
-    res.status(500).json({ error: true, message: "Server error", details: err.message });
+    res
+      .status(500)
+      .json({ error: true, message: "Server error", details: err.message });
   }
 });
 

@@ -14,6 +14,7 @@ const CartItemSchema = new Schema(
     },
     selectedSize: { type: String, required: true },
     selectedColor: { type: String, required: true },
+    selectedImage: { type: [String], default: [] },
     addedAt: { type: Date, default: Date.now },
   },
   { _id: true }
