@@ -1,33 +1,59 @@
-### Test posting cart
+### Create a cart
 POST http://localhost:6000/cart
 Content-Type: application/json
 
 {
-    "userId": "681b181c29c07dee5cc56553",
-    "items": [  {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-                {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-                {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-            
-            ],
-    "status": "active",
-
+  "sessionId": " ",
+  "userId": "681de72ab1bad2861a8c59e7",
+  "items": [ ],
+  "status": "active",
+  "total": 0,
+  "vat": 7
 }
 
+### Get a cartID
+GET http://localhost:6000/cart/:cartId
 
-### GET cart
-GET http://localhost:3000/cart/populated/681c487c82dfd3ede10727e3
+### Add item to cartID
+POST http://localhost:6000/cart/:cartId/items
+Content-Type: application/json
+
+{
+  "productId": "681ddc022daf312664a702d1",
+  "selectedSize": "one size",
+  "selectedColor": "blue",
+  "selectedImage": "src/assets/images/Products/cup/screaming/screaming-cup-blue-front.png",
+  "quantity": 1,
+  "unitPrice": 499
+}
+
+### Delete an cart-item and update cart total price
+DELETE http://localhost:6000/cart/:cartId/items/:itemId
+
+### Get a populated cart
+GET http://localhost:6000/cart/populated/:userId
+
+### Update color'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/color
+Content-Type: application/json
+
+{
+  "selectedColor": "blue"
+}
+
+### Update size'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/size
+Content-Type: application/json
+
+{
+  "selectedSize": "m"
+}
+
+### Update quantity'item
+PATCH http://localhost:6000/cart/:cartId/items/:itemId/quantity
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+

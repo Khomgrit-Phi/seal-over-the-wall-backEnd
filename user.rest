@@ -1,4 +1,5 @@
-POST http://localhost:6000/user/register
+### REGISTER
+POST http://localhost:6000/user/sign-up
 Content-Type: application/json
 
 {
@@ -10,13 +11,39 @@ Content-Type: application/json
   "lastName":    "Ton-2",
   "addresses": [
     {
-      "address":     "1234",
+      "address":     "62/1 Soi Ekkachai 116",
       "specific":    "My house",
-      "subDistrict": "AY",
-      "district":    "AYT",
-      "city":        "ATYY",
-      "postal":      "13000",
+      "subDistrict": "Bang Bon Nuea",
+      "district":    "Bang Bon",
+      "city":        "Bangkok",
+      "postal":      "10150",
       "isDefault":   true
     }
   ]
+}
+
+### SIGN-IN
+POST http://localhost:6000/user/sign-in
+Content-Type: application/json
+
+{
+  "email": "sch@example.com",
+  "password": "234567"
+}
+
+
+### Add New Address
+
+POST http://localhost:6000/user/new-address
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFjNDg3YzgyZGZkM2VkZTEwNzI3ZTMiLCJlbWFpbCI6InRvbi0xN0BleGFtcGxlLmNvbSIsImlhdCI6MTc0NjY5MzMwNCwiZXhwIjoxNzQ3Mjk4MTA0fQ.S7VcpGZy0_heKNrLtg8O5U-UDp6aOHYtp--Rc_gCoTw
+Content-Type: application/json
+
+{
+  "address": "5678",
+  "specific": "Apartment 4",
+  "subDistrict": "XYZ",
+  "district": "ZZ",
+  "city": "Metropolis",
+  "postal": "14000",
+  "isDefault": false
 }
