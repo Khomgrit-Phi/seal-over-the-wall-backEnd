@@ -214,7 +214,7 @@ router.get("/populated/:userId", async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    console.log(cart)
+
     res.status(200).json({error:false,cart});
   } catch (error) {
     console.error("Error in /populated/:userId route:", error);

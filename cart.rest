@@ -1,11 +1,11 @@
 ### Create a cart
-POST http://localhost:6000/cart
+POST http://localhost:3000/cart
 Content-Type: application/json
 
 {
-  "sessionId": " ",
-  "userId": "681de72ab1bad2861a8c59e7",
-  "items": [ ],
+  "sessionId": "",
+  "userId": "681f06a48872b623329fd31b",
+  "items": [],
   "status": "active",
   "total": 0,
   "vat": 7
@@ -15,15 +15,14 @@ Content-Type: application/json
 GET http://localhost:6000/cart/:cartId
 
 ### Add item to cartID
-POST http://localhost:6000/cart/:cartId/items
+POST http://localhost:3000/cart/681f06c5d3a2c3d59edc5a33/items
 Content-Type: application/json
 
 {
   "productId": "681ddc022daf312664a702d1",
-  "selectedSize": "one size",
+  "selectedSize": "one-size",
   "selectedColor": "blue",
   "selectedImage": "src/assets/images/Products/cup/screaming/screaming-cup-blue-front.png",
-  "quantity": 1,
   "unitPrice": 499
 }
 

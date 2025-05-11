@@ -1,10 +1,10 @@
 ### REGISTER
-POST http://localhost:6000/user/sign-up
+POST http://localhost:3000/user/signUp
 Content-Type: application/json
 
 {
-  "firstName":   "Ton-97",
-  "email":       "ton-97@example.com",
+  "firstName":   "CART component",
+  "email":       "Cart@example.com",
   "password":    "12345",
   "phoneNumber": "1234567890",
   "userName":    "Ton-1",
