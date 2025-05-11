@@ -15,7 +15,7 @@ const OrderItemSchema = new Schema(
     },
     selectedSize: { type: String, required: true },
     selectedColor: { type: String, required: true },
-    selectedImage: { type: [String], default: [] },
+    selectedImage: { type: String, required: true },
     addedAt: { type: Date, default: Date.now },
   },
   { _id: true }
