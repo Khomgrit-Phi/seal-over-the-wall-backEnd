@@ -1,14 +1,14 @@
 ### REGISTER
-POST http://localhost:6000/user/sign-up
+POST http://localhost:3000/user/signUp
 Content-Type: application/json
 
 {
-  "firstName":   "Somchai",
-  "email":       "sch@example.com",
-  "password":    "234567",
-  "phoneNumber": "096666666",
-  "userName":    "User1",
-  "lastName":    "Kitkardee",
+  "firstName":   "CART component",
+  "email":       "Cart@example.com",
+  "password":    "12345",
+  "phoneNumber": "1234567890",
+  "userName":    "Ton-1",
+  "lastName":    "Ton-2",
   "addresses": [
     {
       "address":     "62/1 Soi Ekkachai 116",
