@@ -63,7 +63,7 @@ router.get("/:userId", async (req, res) => {
   }
 
   try {
-    const existCart = await Cart.findOne(userId);
+    const existCart = await Cart.findOne({ userId: userId });
     if (!existCart) {
       return res.status(404).json({
         error: true,
@@ -95,6 +95,11 @@ router.post("/:cartId/items", async (req, res) => {
     selectedSize,
     selectedImage,
   } = req.body;
+
+  // console.log("Request params:", req.params);
+  // console.log("Request body:", req.body);
+  // console.log("Cart ID:", cartId);
+  // console.log("Product ID:", productId);
 
   if (
     !productId ||
@@ -132,6 +137,19 @@ router.post("/:cartId/items", async (req, res) => {
     // Update item in cart
     cart.items.push(newItem);
 
+    const cartItem = new CartItem({
+      cartId: cart._id,
+      productId: new mongoose.Types.ObjectId(productId),
+      quantity,
+      unitPrice,
+      selectedSize,
+      selectedColor,
+      selectedImage,
+    });
+
+    // save CartItem
+    await cartItem.save();
+
     // update total and updatedAt
     cart.total += quantity * unitPrice;
     cart.updatedAt = new Date();
@@ -145,6 +163,8 @@ router.post("/:cartId/items", async (req, res) => {
       message: "Item added to cart successfully",
     });
   } catch (err) {
+    console.error("Error adding item to cart:", err);
+    console.error("Error stack:", err.stack);
     return res.status(500).json({
       error: true,
       message: "Server error",
@@ -200,10 +220,11 @@ router.delete("/:cartId/items/:itemId", async (req, res) => {
       .json({ error: true, message: "Server error", details: err.message });
   }
 });
-//Get a populated cart
+
+//-------------------------------Get a populated cart-------------------------------
 router.get("/populated/:userId", async (req, res) => {
   try {
-    const {userId} = req.params; // Assuming you have user authentication
+    const userId = req.params.userId; //add .userId to find the userId value directly
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
@@ -214,8 +235,7 @@ router.get("/populated/:userId", async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    console.log(cart)
-    res.status(200).json({error:false,cart});
+    res.status(200).json(cart);
   } catch (error) {
     console.error("Error in /populated/:userId route:", error);
     res

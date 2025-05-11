@@ -1,40 +1,40 @@
 ### Create a cart
-POST http://localhost:6000/cart
+POST http://localhost:3000/cart
 Content-Type: application/json
 
 {
   "sessionId": " ",
-  "userId": "681de72ab1bad2861a8c59e7",
+  "userId": "681b7fd8d9b9f9f6465bf2e1",
   "items": [ ],
   "status": "active",
   "total": 0,
   "vat": 7
 }
 
-### Get a cartID
-GET http://localhost:6000/cart/:cartId
+### Get a userID
+GET http://localhost:3000/cart/681b7fd8d9b9f9f6465bf2e1
 
 ### Add item to cartID
-POST http://localhost:6000/cart/:cartId/items
+POST http://localhost:3000/cart/681f9a80c09b12e484cf71a4/items
 Content-Type: application/json
 
 {
-  "productId": "681ddc022daf312664a702d1",
+  "productId": "681dd18d655b54e321a8464c",
   "selectedSize": "one size",
-  "selectedColor": "blue",
-  "selectedImage": "src/assets/images/Products/cup/screaming/screaming-cup-blue-front.png",
+  "selectedColor": "white",
+  "selectedImage": "src/assets/images/Products/cup/prove/prove-cup-gray-front.png",
   "quantity": 1,
-  "unitPrice": 499
+  "unitPrice": 399
 }
 
 ### Delete an cart-item and update cart total price
-DELETE http://localhost:6000/cart/:cartId/items/:itemId
+DELETE http://localhost:3000/cart/:cartId/items/:itemId
 
 ### Get a populated cart
-GET http://localhost:6000/cart/populated/:userId
+GET http://localhost:3000/cart/populated/:userId
 
 ### Update color'item
-PATCH http://localhost:6000/cart/:cartId/items/:itemId/color
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/color
 Content-Type: application/json
 
 {
@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ### Update size'item
-PATCH http://localhost:6000/cart/:cartId/items/:itemId/size
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/size
 Content-Type: application/json
 
 {
@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 
 ### Update quantity'item
-PATCH http://localhost:6000/cart/:cartId/items/:itemId/quantity
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/quantity
 Content-Type: application/json
 
 {
