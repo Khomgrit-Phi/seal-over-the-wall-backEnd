@@ -4,31 +4,31 @@ Content-Type: application/json
 
 {
   "sessionId": " ",
-  "userId": "681b7fd8d9b9f9f6465bf2e1",
+  "userId": "6820dd2924d4639ab3d8e17f",
   "items": [ ],
   "status": "active",
   "total": 0,
   "vat": 7
 }
 
-### Get a userID
-GET http://localhost:3000/cart/681b7fd8d9b9f9f6465bf2e1
+### Get a cart by userID
+GET http://localhost:3000/cart/:userId
 
 ### Add item to cartID
-POST http://localhost:3000/cart/681f9a80c09b12e484cf71a4/items
+POST http://localhost:3000/cart/:cartId/items
 Content-Type: application/json
 
 {
-  "productId": "681dd18d655b54e321a8464c",
-  "selectedSize": "one size",
+  "productId": "681dd534655b54e321a84654",
+  "selectedSize": "l",
   "selectedColor": "white",
-  "selectedImage": "src/assets/images/Products/cup/prove/prove-cup-gray-front.png",
+  "selectedImage": "src/assets/images/Products/shirt/espresso/espresso-shirt-white-front.p…",
   "quantity": 1,
-  "unitPrice": 399
+  "unitPrice": 499
 }
 
 ### Delete an cart-item and update cart total price
-DELETE http://localhost:3000/cart/:cartId/items/:itemId
+DELETE http://localhost:3000/cart/items/:itemId
 
 ### Get a populated cart
 GET http://localhost:3000/cart/populated/:userId
@@ -57,3 +57,12 @@ Content-Type: application/json
   "quantity": 3
 }
 
+### Update cart item details by itemId (color, size, quantity)
+PATCH http://localhost:3000/cart/items/:itemId
+Content-Type: application/json
+
+{
+    "selectedColor": "black",
+    "selectedSize": "m",
+    "quantity": 2
+}
