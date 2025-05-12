@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+//SignUp
 router.post("/signUp", async (req, res) => {
   const { firstName, email, password, phoneNumber, userName, lastName, addresses = [] } = req.body;
   if (!firstName || !lastName || !email ||  !password ||  !phoneNumber ||  !userName) {
@@ -41,7 +42,7 @@ router.post("/signUp", async (req, res) => {
   }
 });
 
-//Login
+//Signin
 router.post("/signIn", async (req, res) => {
   const {email, password} = req.body;
   if (!email || !password) {
@@ -130,7 +131,7 @@ router.post("/new-address", verify, async (req, res) => {
 });
 
 
-//Login with cookies
+//Signin with cookies
 router.post("cookie/signIn", async (req, res) => {
   const { email, password } = req.body;
 
@@ -190,7 +191,7 @@ router.post("cookie/signIn", async (req, res) => {
 });
 
 
-//Logout to clear cookies
+//Signout to clear cookies
 router.post("/auth/logout", (req, res) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
