@@ -7,79 +7,93 @@ const router = express.Router();
 
 //Create an order -> will might not be used
 router.post("/", async (req, res) => {
-    const {userId, addressId, items = [], status, total = 0, vat=7, paymentId, } = req.body;
-    if (!userId || !addressId || !status || !vat || !paymentId) {
-        return res.status(400).json({error: true, message: "The information is not fulfilled"
-        })
-    }
+    const { userId, items = [], status = 'pending', total, vat = 7, addressId = '', paymentId = '' } = req.body;
 
-    try {
-        const order = new Order({
-            userId: new mongoose.Types.ObjectId(userId),
-            addressId: new mongoose.Types.ObjectId(addressId),
-            items: items?.map(item => ({
-                ...item,
-                productId: new mongoose.Types.ObjectId(item.productId),
-                selectedSize: item.selectedSize,
-                selectedColor: item.selectedColor,
-            })) || [], // Handle case where items might be undefined
-            status,
-            total,
-            vat,
-            paymentId: new mongoose.Types.ObjectId(paymentId)
-        });
-        await order.save()
-
-        return res.status(201).json({ error: false, order, message: "The order is create successfully" });
-
-    } catch (err) {
-        return res.status(500).json({error: true, message: "Server error", details: err.message })
-    }
-})
-
-//Create partial order (no address and payment) Initiate this first
-router.post("/", async (req, res) => {
-    const { userId, status = "pending", vat = 7 } = req.body;
-
-    if (!userId || !status) {
+    if (!userId || !status || !vat || !total) {
         return res.status(400).json({ error: true, message: "The information is not fulfilled" });
     }
 
     try {
-        // Fetch cart items for the user
-        const cart = await Cart.findOne({ userId });
-        if (!cart || cart.items.length === 0) {
-            return res.status(400).json({ error: true, message: "Cart is empty" });
-        }
-
-        // Calculate total from cart items
-        const total = cart.items.reduce((acc, item) => acc + item.totalPrice, 0);
-
-        // Create the order without addressId and paymentId
+        // Step 1: Create the Order object (without items)
         const order = new Order({
             userId: new mongoose.Types.ObjectId(userId),
-            items: cart.items,
+            items: [], // Initially empty
             status,
             total,
             vat,
+            addressId: addressId ? new mongoose.Types.ObjectId(addressId) : undefined,
+            paymentId: paymentId ? new mongoose.Types.ObjectId(paymentId) : undefined,
         });
 
+        // Step 2: Save the order to get the _id
         await order.save();
 
-        // Clear the cart after creating the order
-        await Cart.findOneAndUpdate(
-            { userId: new mongoose.Types.ObjectId(userId) },
-            { items: [], total: 0 }
-        );
+        // Step 3: Attach the orderId to each item
+        order.items = items.map(item => ({
+            orderId: order._id,  // Attach the order ID
+            productId: new mongoose.Types.ObjectId(item.productId),
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            selectedSize: item.selectedSize,
+            selectedColor: item.selectedColor,
+            selectedImage: item.selectedImage,
+        }));
 
-        return res.status(201).json({ error: false, order, message: "Order created successfully (pending details)" });
+        // Step 4: Save the updated order with items
+        await order.save();
+
+        return res.status(201).json({ error: false, order, message: "The order is created successfully" });
 
     } catch (err) {
         return res.status(500).json({ error: true, message: "Server error", details: err.message });
     }
 });
 
+// //Create partial order (no address and payment) Initiate this first
+// router.post("/:userId", async (req, res) => {
+//     const { userId, status = "pending", vat = 7 } = req.body;
+
+//     if (!userId || !status) {
+//         return res.status(400).json({ error: true, message: "The information is not fulfilled" });
+//     }
+
+//     try {
+//         // Fetch cart items for the user
+//         const cart = await Cart.findOne({ userId });
+//         if (!cart || cart.items.length === 0) {
+//             return res.status(400).json({ error: true, message: "Cart is empty" });
+//         }
+
+//         // Calculate total from cart items
+//         const total = cart.items.reduce((acc, item) => acc + item.totalPrice, 0);
+
+//         // Create the order without addressId and paymentId
+//         const order = new Order({
+//             userId: new mongoose.Types.ObjectId(userId),
+//             items: cart.items,
+//             status,
+//             total,
+//             vat,
+//         });
+
+//         await order.save();
+
+//         // Clear the cart after creating the order
+//         await Cart.findOneAndUpdate(
+//             { userId: new mongoose.Types.ObjectId(userId) },
+//             { items: [], total: 0 }
+//         );
+
+//         return res.status(201).json({ error: false, order, message: "Order created successfully (pending details)" });
+
+//     } catch (err) {
+//         return res.status(500).json({ error: true, message: "Server error", details: err.message });
+//     }
+// });
+
 //Get an order by order object ID
+
+
 router.get("/:orderId", async (req,res) => {
     const {orderId} = req.params;
     if (!orderId) {

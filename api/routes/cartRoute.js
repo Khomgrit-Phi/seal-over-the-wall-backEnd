@@ -175,9 +175,9 @@ router.post("/:cartId/items", async (req, res) => {
 
 //-------------------------------Delete an cart-item and update cart total price-------------------------------
 //Add the cartId to find the cart first, and then find the item within that cart.
-router.delete("/:cartId/items/:itemId", async (req, res) => {
+router.delete("/:cartId/item/:itemId", async (req, res) => {
   const { cartId, itemId } = req.params;
-  // console.log(`cartId: ${cartId}, itemId: ${itemId}`);
+  // console.log(`userId: ${userId}, itemId: ${itemId}`);
 
   try {
     // check that the cart exists
@@ -186,9 +186,13 @@ router.delete("/:cartId/items/:itemId", async (req, res) => {
       return res.status(404).json({ error: true, message: "Cart not found" });
     }
 
+    console.log(cart)
+
     const embeddedItemIndex = cart.items.findIndex(
       (item) => item._id.toString() === itemId
     );
+
+    console.log(embeddedItemIndex)
 
     if (embeddedItemIndex >= 0) {
       // Store the price of that item first; if you delete it, you won't know its price

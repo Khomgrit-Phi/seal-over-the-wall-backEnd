@@ -1,6 +1,7 @@
 // import { User, Address, Creator } from "../../models/User.js";
 import express from "express";
-import { User } from "../../models/User.js";
+import { User} from "../../models/User.js";
+import { Order } from "../../models/Order.js";
 import { verify } from "../../middlewares/verify.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -92,30 +93,30 @@ router.post("/signIn", async (req, res) => {
 });
 
 // Add New Address
-router.post("/new-address", verify, async (req, res) => {
-  const { address, specific, subDistrict, district, city, postal, isDefault } =
+router.post("/address/:userId/:orderId", verify, async (req, res) => {
+  const {firstName,lastName,address, specific, subDistrict, district, city, postal, email, phone, smsPromotion = false,emailPromotion = false } = req;
     req.body;
+  const {userId, orderId} = req.params
 
-  if (!address || !specific || !subDistrict || !district || !city || !postal) {
+  if (!firstName || !lastName || !address || !specific || !subDistrict || !district || !city || !postal || !email || !phone || !smsPromotion || !emailPromotion) {
     return res
       .status(400)
       .json({ error: true, message: "Missing address fields" });
   }
 
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById({ userId: userId });
     if (!user) {
       return res.status(404).json({ error: true, message: "User not found" });
     }
 
+    const order = await Order.findById({ orderId: orderId });
+    if (!order) {
+      return res.status(404).json({ error: true, message: "Order not found" });
+    }
+
     user.addresses.push({
-      address,
-      specific,
-      subDistrict,
-      district,
-      city,
-      postal,
-      isDefault: isDefault || false,
+      order, firstName,lastName,address, specific, subDistrict, district, city, postal, email, phone, smsPromotion,emailPromotion
     });
 
     res.status(201).json({
