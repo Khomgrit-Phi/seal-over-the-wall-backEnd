@@ -96,11 +96,6 @@ router.post("/:cartId/items", async (req, res) => {
     selectedImage,
   } = req.body;
 
-  // console.log("Request params:", req.params);
-  // console.log("Request body:", req.body);
-  // console.log("Cart ID:", cartId);
-  // console.log("Product ID:", productId);
-
   if (
     !productId ||
     !unitPrice ||
@@ -123,8 +118,12 @@ router.post("/:cartId/items", async (req, res) => {
       });
     }
 
-    // Create new item
-    const newItem = {
+    // create new obj.Id for user CartItem and _id item in cart
+    const newItemId = new mongoose.Types.ObjectId();
+
+    // create item for push into cart.items use new _id ที่ createจากข้างบน
+    const newItemInCart = {
+      _id: newItemId,
       cartId: cart._id,
       productId: new mongoose.Types.ObjectId(productId),
       quantity,
@@ -135,9 +134,11 @@ router.post("/:cartId/items", async (req, res) => {
     };
 
     // Update item in cart
-    cart.items.push(newItem);
+    cart.items.push(newItemInCart);
 
+    // create CartItem
     const cartItem = new CartItem({
+      _id: newItemId,
       cartId: cart._id,
       productId: new mongoose.Types.ObjectId(productId),
       quantity,
@@ -396,6 +397,104 @@ router.patch("/:cartId/items/:itemId/quantity", async (req, res) => {
       cart,
       item,
       message: "Item quantity updated successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: true,
+      message: "Server error",
+      details: err.message,
+    });
+  }
+});
+
+// -------------------------------Update cart item details by itenId (color, size, quantity)-------------------------------
+router.patch("/items/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  const { selectedColor, selectedSize, quantity } = req.body;
+
+  try {
+    // Find CartItem by itemId
+    const cartItem = await CartItem.findById(itemId);
+    if (!cartItem) {
+      return res.status(404).json({
+        error: true,
+        message: "Cart item not found",
+      });
+    }
+
+    // Get cartId from the CartItem
+    const cartId = cartItem.cartId;
+
+    // Find Cart
+    const cart = await Cart.findById(cartId);
+    if (!cart) {
+      return res.status(404).json({
+        error: true,
+        message: "Cart not found",
+      });
+    }
+
+    // Find item within the cart's items array
+    const item = cart.items.id(itemId);
+    if (!item) {
+      return res.status(404).json({
+        error: true,
+        message: "Item not found in cart",
+      });
+    }
+
+    let isUpdated = false;
+
+    if (selectedColor !== undefined) {
+      item.selectedColor = selectedColor;
+      cartItem.selectedColor = selectedColor;
+      isUpdated = true;
+    }
+
+    if (selectedSize !== undefined) {
+      item.selectedSize = selectedSize;
+      cartItem.selectedSize = selectedSize;
+      isUpdated = true;
+    }
+
+    if (quantity !== undefined) {
+      if (quantity <= 0) {
+        return res.status(400).json({
+          error: true,
+          message: "Valid quantity is required (must be greater than 0)",
+        });
+      }
+
+      const oldTotal = item.quantity * item.unitPrice;
+      item.quantity = quantity;
+      cartItem.quantity = quantity;
+
+      const newTotal = item.quantity * item.unitPrice;
+      cartItem.totalPrice = newTotal; // Update totalPrice in CartItem
+      cart.total = cart.total - oldTotal + newTotal;
+      isUpdated = true;
+    }
+
+    if (!isUpdated) {
+      return res.status(400).json({
+        error: true,
+        message:
+          "No valid update parameters provided (selectedColor, selectedSize, or quantity)",
+      });
+    }
+
+    // save cartItem
+    await cartItem.save();
+    cart.updatedAt = new Date();
+
+    // save cart
+    await cart.save();
+
+    return res.status(200).json({
+      error: false,
+      cart,
+      item,
+      message: "Item details updated successfully",
     });
   } catch (err) {
     return res.status(500).json({
