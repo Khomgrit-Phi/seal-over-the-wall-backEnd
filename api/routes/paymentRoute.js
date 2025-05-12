@@ -6,24 +6,26 @@ import bcrypt from "bcrypt";
 const router = express.Router();
 
 // Create new payment document
-router.post("/", async (req, res) => {
-    const { orderId, amount, method, status, cardName, cardNumber, cvv } = req.body;
+router.post("/:orderId", async (req, res) => {
+    const { firstName = '', lastName = '', amount, method, status ="pending", cardName = '', cardNumber = '', cvv = '' } = req.body;
 
-    if ( !orderId || !amount || !method || !status || !cardName || !cardNumber || !cvv ) {
+    if ( !lastName || !firstName  || !amount || !method || !status || !cardName || !cardNumber || !cvv ) {
         return res.status(400).json({
             error: true,
             message: "All fields are required"
         });
-    }
+        }
+    const {orderId} = req.params
+
     try {
-        const existingOrder = await Order.findOne({orderId});
+        const existingOrder = await Order.findOne({orderId: orderId});
         if(existingOrder) {
             res.status(404).json({
                 error: true,
                 message : "No Order found"
             });
         }
-        const payment = new Payment({ orderId, amount, method, status, cardName, cardNumber, cvv });
+        const payment = new Payment({ orderId, firstName, lastName,amount, method, status, cardName, cardNumber, cvv });
 
         await payment.save();
         res.status(201).json({

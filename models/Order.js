@@ -29,7 +29,6 @@ OrderItemSchema.pre("save", function (next) {
 const OrderSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   items: { type: [OrderItemSchema], required: true, default: [] },
-  addressId: { type: Schema.Types.ObjectId, ref: "Address" },
   status: {
     type: String,
     enum: ["pending", "paid", "shipped", "delivered", "cancelled"],
@@ -37,6 +36,7 @@ const OrderSchema = new Schema({
   },
   total: { type: Number, default: 0 },
   vat: { type: Number, default: 7 },
+  addressId: { type: Schema.Types.ObjectId, ref: "Address" },
   paymentId: { type: Schema.Types.ObjectId, ref: "Payment" },
   orderDate: { type: Date, default: Date.now },
 });

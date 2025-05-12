@@ -175,76 +175,54 @@ router.post("/:cartId/items", async (req, res) => {
 });
 
 //-------------------------------Delete an cart-item and update cart total price-------------------------------
-router.delete("/items/:itemId", async (req, res) => {
-  const { itemId } = req.params;
+//Add the cartId to find the cart first, and then find the item within that cart.
+router.delete("/:cartId/item/:itemId", async (req, res) => {
+  const { cartId, itemId } = req.params;
+  // console.log(`userId: ${userId}, itemId: ${itemId}`);
 
   try {
-    // Find the cart item by ID
-    const cartItem = await CartItem.findById(itemId);
-
-    if (!cartItem) {
-      return res.status(404).json({
-        error: true,
-        message: "Cart item not found",
-      });
-    }
-
-    // Get the cartId from the found cart item
-    const cartId = cartItem.cartId;
-
-    // Find the cart that have this item
+    // check that the cart exists
     const cart = await Cart.findById(cartId);
-
     if (!cart) {
-      return res.status(404).json({
-        error: true,
-        message: "Associated cart not found",
-      });
+      return res.status(404).json({ error: true, message: "Cart not found" });
     }
 
-    // Calculate the price for this item
-    const itemPrice = cartItem.unitPrice * cartItem.quantity;
+    console.log(cart)
 
-    // Delete from CartItem collection
-    await CartItem.findByIdAndDelete(itemId);
-
-    // Find the item position in cart items array
-    const itemIndex = cart.items.findIndex(
+    const embeddedItemIndex = cart.items.findIndex(
       (item) => item._id.toString() === itemId
     );
 
-    // If found in the array, remove it
-    if (itemIndex !== -1) {
-      cart.items.splice(itemIndex, 1);
+    console.log(embeddedItemIndex)
 
-      // Update the total price
-      cart.total -= itemPrice;
-      cart.updatedAt = new Date();
+    if (embeddedItemIndex >= 0) {
+      // Store the price of that item first; if you delete it, you won't know its price
+      const itemTotal = cart.items[embeddedItemIndex].totalPrice;
 
-      // Save the updated cart
+      // delete item from arry
+      cart.items.splice(embeddedItemIndex, 1);
+
+      // update Total
+      cart.total -= itemTotal;
+
       await cart.save();
 
       return res.status(200).json({
         error: false,
-        message: "Item successfully removed from cart",
-        updatedCart: cart,
-      });
-    } else {
-      // Case when item is not found in the items array
-      return res.status(200).json({
-        error: false,
-        message: "Item deleted from database, but was not found in the cart",
+        message: "Cart item deleted from embedded items and cart total updated",
         updatedCart: cart,
       });
     }
-  } catch (err) {
-    console.error("Error deleting cart item:", err);
-    console.error("Error stack:", err.stack);
-    return res.status(500).json({
+
+    return res.status(404).json({
       error: true,
-      message: "Server error",
-      details: err.message,
+      message: "Cart item not found in embedded in Cart",
     });
+  } catch (err) {
+    console.error("Error in delete cart item:", err);
+    return res
+      .status(500)
+      .json({ error: true, message: "Server error", details: err.message });
   }
 });
 
