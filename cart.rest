@@ -12,26 +12,15 @@ Content-Type: application/json
 }
 
 ### Get a userID
-GET http://localhost:3000/cart/6820dd2924d4639ab3d8e17f
+GET http://localhost:3000/cart/6821de629f107d6ad0c88355
 
-### Add item to cartID
-POST http://localhost:3000/cart/6821de7c9f107d6ad0c88358/items
-Content-Type: application/json
 
-{
-  "productId": "681dd3ea655b54e321a84650",
-  "selectedSize": "one-size",
-  "selectedColor": "blue",
-  "selectedImage": "src/assets/images/Products/bag/dont/dont-bag-white-front.png",
-  "quantity": 1,
-  "unitPrice": 299
-}
 
 ### Delete an cart-item and update cart total price
 DELETE http://localhost:3000/cart/:cartId/items/:itemId
 
 ### Get a populated cart
-GET http://localhost:3000/cart/populated/:userId
+GET http://localhost:3000/cart/populated/6821de629f107d6ad0c88355
 
 ### Update color'item
 PATCH http://localhost:3000/cart/:cartId/items/:itemId/color
@@ -57,3 +46,28 @@ Content-Type: application/json
   "quantity": 3
 }
 
+
+###Updated the cartItem detail
+PATCH http://localhost:3000/cart/items/68231bec7227bded56a59f74
+Content-Type: application/json
+
+{
+  "selectedColor": "white",
+  "selectedSize": "m",
+  "quantity": 5,
+  "selectedImage": "src/assets/images/Products/shirt/espresso/espresso-shirt-white-front.png"
+}
+
+
+### Add item to cartID
+POST http://localhost:3000/cart/6821de629f107d6ad0c88355/items
+Content-Type: application/json
+
+{
+  "productId": "681dd534655b54e321a84654",
+  "selectedSize": "m",
+  "selectedColor": "black",
+  "selectedImage": "src/assets/images/Products/shirt/espresso/espresso-shirt-black-front.png",
+  "quantity": 2,
+  "unitPrice": 499
+}
