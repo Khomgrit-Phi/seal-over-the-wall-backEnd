@@ -137,7 +137,7 @@ router.post("/address/:userId/:orderId", verify, async (req, res) => {
 
 
 //Signin with cookies
-router.post("cookie/signIn", verify, async (req, res) => {
+router.post("/cookie/signIn", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -177,15 +177,14 @@ router.post("cookie/signIn", verify, async (req, res) => {
       maxAge: 720 * 60 * 1000, // 12 hour
     });
 
+    const userObject = user.toObject();
+    delete userObject.password;
+
     res.status(200).json({
       error: false,
       message: "Login successful",
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        fullName: user.fullName,
-    }}), // send some safe public info if needed
+      user: userObject,
+    }), // send some safe public info if needed
     await user.save();
 
   } catch (err) {
@@ -204,6 +203,16 @@ router.post("/auth/logout", (req, res) => {
     sameSite: "Strict",
   });
   res.status(200).json({ message: "Logged out successfully" });
+});
+
+//Check a Token
+router.get("/auth/profile",authCookie, async (req, res) => {
+  const user = await User.findById(req.user.user._id).select("-password"); // exclude password
+  if (!user) {
+    return res.status(404).json({ error: true, message: "User not found" });
+  }
+
+  res.status(200).json({ error: false, user });
 });
 
 export default router;
