@@ -1,6 +1,7 @@
 import express from "express";
 import { Cart, CartItem } from "../../models/Cart.js";
 import mongoose from "mongoose";
+import {User} from "../../models/User.js"
 
 const router = express.Router();
 
@@ -10,15 +11,22 @@ router.post("/", async (req, res) => {
     sessionId = "",
     userId,
     items = [],
-    status,
+    status = "active",
     total = 0,
     vat = 7,
   } = req.body;
-  if (!userId || !status) {
+  if (!userId) {
     return res
       .status(400)
       .json({ error: true, message: "The information is not fulfilled" });
   }
+
+  const existingUser = await User.findOne(userId)
+  if (existingUser) {
+    return res.status(200).send("Cart is already created")
+  }
+
+
   try {
     const cart = new Cart({
       sessionId,

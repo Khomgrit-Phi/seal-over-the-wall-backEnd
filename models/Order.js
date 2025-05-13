@@ -29,17 +29,40 @@ OrderItemSchema.pre("save", function (next) {
 const OrderSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   items: { type: [OrderItemSchema], required: true, default: [] },
-  status: {
-    type: String,
-    enum: ["pending", "paid", "shipped", "delivered", "cancelled"],
-    default: "pending",
-  },
+  shippingMethod: { type: String, enum: ["standard", "fastest", "cod"], default: "standard"},
+  status: {type: String, enum: ["pending", "paid", "shipped", "delivered", "cancelled"], default: "pending",},
   total: { type: Number, default: 0 },
   vat: { type: Number, default: 7 },
-  addressId: { type: Schema.Types.ObjectId, ref: "Address" },
-  paymentId: { type: Schema.Types.ObjectId, ref: "Payment" },
+  address: {
+    address: { type: String, required: true },
+    specific: { type: String },
+    district: { type: String, required: true },
+    subDistrict: { type: String, required: true },
+    city: { type: String, required: true },
+    postal: { type: String, required: true },
+  },
+  payment: {
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
+    cardNumber: {type: String, required: true},
+    exp:{type: String, required: true},
+    cvv: {type: String, required: true},
+  },
   orderDate: { type: Date, default: Date.now },
 });
 
 export const Order = model("Order", OrderSchema);
 export const OrderItem = model("OrderItem", OrderItemSchema);
+
+// Hash cardNumber before saving
+OrderSchema.pre("save", async (next) => {
+  if (this.isModified("cardNumber")) {
+    this.cardNumber = await bcrypt.hash(this.cardNumber, 10);
+  }
+
+  if (this.isModified("cvv")) {
+    this.cvv = await bcrypt.hash(this.cvv, 10);
+  }
+
+  next();
+});

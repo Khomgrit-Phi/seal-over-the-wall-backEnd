@@ -3,12 +3,7 @@ POST http://localhost:3000/cart
 Content-Type: application/json
 
 {
-  "sessionId": "",
-  "userId": "6821de629f107d6ad0c88355",
-  "items": [],
-  "status": "active",
-  "total": 0,
-  "vat": 7
+  "userId": "6823497258ab08e080fcb05d"
 }
 
 ### Get a userID

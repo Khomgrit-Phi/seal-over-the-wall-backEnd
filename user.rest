@@ -3,23 +3,23 @@ POST http://localhost:3000/user/signUp
 Content-Type: application/json
 
 {
-  "firstName":   "MOCK1",
-  "email":       "MOCK1@example.com",
+  "firstName":   "MOCK3",
+  "email":       "MOCK3@example.com",
   "password":    "12345",
   "phoneNumber": "1234567890",
-  "userName":    "MOCK1",
-  "lastName":    "MOCK1",
+  "userName":    "MOCK3",
+  "lastName":    "MOCK3",
   "addresses": [
     {
-      "firstName":   "MOCK1",
-      "lastName": "MOCK1",
+      "firstName":   "MOCK3",
+      "lastName": "MOCK3",
       "address":     "62/1 Soi Ekkachai 116",
       "specific":    "My house",
       "subDistrict": "Bang Bon Nuea",
       "district":    "Bang Bon",
       "city":        "Bangkok",
       "postal":      "10150",
-      "email": "MOCK1@example.com",
+      "email": "MOCK3@example.com",
       "phone": "1234567890",
       "isDefault":   true
     }

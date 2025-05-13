@@ -5,6 +5,7 @@ import { Order } from "../../models/Order.js";
 import { verify } from "../../middlewares/verify.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Cart } from "../../models/Cart.js";
 
 const router = express.Router();
 
@@ -33,9 +34,12 @@ router.post("/signUp", async (req, res) => {
       addresses,
     });
 
+    const cart = new Cart({userId: user._id})
+    console.log(cart)
+
     res
       .status(201)
-      .json({ error: false, message: "User registered successfully", user });
+      .json({ error: false, message: "User registered successfully", user, cart });
   } catch (err) {
     res
       .status(500)
