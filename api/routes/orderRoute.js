@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
-//Create an order -> will might not be used
+//Create an order
 router.post("/", async (req, res) => {
     const { userId, items = [], status = 'pending', total, vat = 7, addressId = '', paymentId = '' } = req.body;
 

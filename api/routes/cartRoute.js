@@ -85,8 +85,8 @@ router.get("/:userId", async (req, res) => {
 });
 
 //------------------------------- Add item to cart-------------------------------
-router.post("/:cartId/items", async (req, res) => {
-  const { cartId } = req.params;
+router.post("/:userId/items", async (req, res) => {
+  const { userId } = req.params;
   const {
     productId,
     quantity = 1,
@@ -110,7 +110,7 @@ router.post("/:cartId/items", async (req, res) => {
   }
 
   try {
-    const cart = await Cart.findById(cartId);
+    const cart = await Cart.findOne({userId});
     if (!cart) {
       return res.status(404).json({
         error: true,
@@ -410,7 +410,7 @@ router.patch("/:cartId/items/:itemId/quantity", async (req, res) => {
 // -------------------------------Update cart item details by itenId (color, size, quantity)-------------------------------
 router.patch("/items/:itemId", async (req, res) => {
   const { itemId } = req.params;
-  const { selectedColor, selectedSize, quantity } = req.body;
+  const { selectedColor, selectedSize, quantity, selectedImage } = req.body;
 
   try {
     // Find CartItem by itemId
@@ -454,6 +454,12 @@ router.patch("/items/:itemId", async (req, res) => {
     if (selectedSize !== undefined) {
       item.selectedSize = selectedSize;
       cartItem.selectedSize = selectedSize;
+      isUpdated = true;
+    }
+
+    if (selectedImage !== undefined) {
+      item.selectedImage = selectedImage;
+      cartItem.selectedImage = selectedImage;
       isUpdated = true;
     }
 
@@ -504,5 +510,8 @@ router.patch("/items/:itemId", async (req, res) => {
     });
   }
 });
+
+
+
 
 export default router;
