@@ -1,24 +1,29 @@
 
 ### Post an order
-POST http://localhost:6000/order
+POST http://localhost:3000/order
 Content-Type: application/json
 
 {
   "userId": "644f1e58f9f8b915d5c7d9a1",
-  "addressId": "644f1e58f9f8b915d5c7d9a2",
   "items": [
-    {
-      "productId": "644f1e58f9f8b915d5c7d9a3",
-      "quantity": 5,
-      "unitPrice": 499,
-      "selectedSize": "s",
-      "selectedColor": "black"
-    }
-  ],
-  "status": "pending",
-  "total": 40,
-  "vat": 7,
-  "paymentId": "644f1e58f9f8b915d5c7d9a4"
+  {
+    "productId": "644f1e58f9f8b915d5c7d345",
+    "quantity": 5,
+    "unitPrice": 499,
+    "selectedSize": "s",
+    "selectedColor": "black",
+    "selectedImage": "test"
+  },
+  {
+    "productId": "644f1e58f9f8b915d5c7d123",
+    "quantity": 5,
+    "unitPrice": 499,
+    "selectedSize": "s",
+    "selectedColor": "black",
+    "selectedImage": "test"
+  }
+],
+  "total": 40
 }
 
 
@@ -33,3 +38,6 @@ Content-Type: application/json
 {
   "status":"paid"
 }
+
+### Delete CartItem (by cartID and cartItem ID)
+DELETE  http://localhost:3000/cart/6821de7c9f107d6ad0c88358/item/6821df809f107d6ad0c88368

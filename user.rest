@@ -1,22 +1,26 @@
 ### REGISTER
-POST http://localhost:6000/user/sign-up
+POST http://localhost:3000/user/signUp
 Content-Type: application/json
 
 {
-  "firstName":   "Ton-17",
-  "email":       "ton-17@example.com",
+  "firstName":   "MOCK1",
+  "email":       "MOCK1@example.com",
   "password":    "12345",
   "phoneNumber": "1234567890",
-  "userName":    "Ton-17",
-  "lastName":    "Ton-17",
+  "userName":    "MOCK1",
+  "lastName":    "MOCK1",
   "addresses": [
     {
-      "address":     "1234",
+      "firstName":   "MOCK1",
+      "lastName": "MOCK1",
+      "address":     "62/1 Soi Ekkachai 116",
       "specific":    "My house",
-      "subDistrict": "AY",
-      "district":    "AYT",
-      "city":        "ATYY",
-      "postal":      "13000",
+      "subDistrict": "Bang Bon Nuea",
+      "district":    "Bang Bon",
+      "city":        "Bangkok",
+      "postal":      "10150",
+      "email": "MOCK1@example.com",
+      "phone": "1234567890",
       "isDefault":   true
     }
   ]
@@ -27,8 +31,8 @@ POST http://localhost:6000/user/sign-in
 Content-Type: application/json
 
 {
-  "email": "ton-17@example.com",
-  "password": "12345"
+  "email": "sch@example.com",
+  "password": "234567"
 }
 
 

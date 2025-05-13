@@ -1,29 +1,59 @@
-### Test posting cart
-POST http://localhost:6000/cart
+### Create a cart
+POST http://localhost:3000/cart
 Content-Type: application/json
 
 {
-    "userId": "681b181c29c07dee5cc56553",
-    "items": [  {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-                {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-                {"cartId": "",
-                "productId": ,
-                "quantity": 2,
-                "unitPrice": 499,
-                "selectedSize": "m",
-                "selectedColor": "black"},
-            
-            ],
-    "status": "active",
-
+  "sessionId": "",
+  "userId": "6821de629f107d6ad0c88355",
+  "items": [],
+  "status": "active",
+  "total": 0,
+  "vat": 7
 }
+
+### Get a userID
+GET http://localhost:3000/cart/681b7fd8d9b9f9f6465bf2e1
+
+### Add item to cartID
+POST http://localhost:3000/cart/6821de7c9f107d6ad0c88358/items
+Content-Type: application/json
+
+{
+  "productId": "681dd3ea655b54e321a84650",
+  "selectedSize": "one-size",
+  "selectedColor": "blue",
+  "selectedImage": "src/assets/images/Products/bag/dont/dont-bag-white-front.png",
+  "quantity": 1,
+  "unitPrice": 299
+}
+
+### Delete an cart-item and update cart total price
+DELETE http://localhost:3000/cart/:cartId/items/:itemId
+
+### Get a populated cart
+GET http://localhost:3000/cart/populated/:userId
+
+### Update color'item
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/color
+Content-Type: application/json
+
+{
+  "selectedColor": "blue"
+}
+
+### Update size'item
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/size
+Content-Type: application/json
+
+{
+  "selectedSize": "m"
+}
+
+### Update quantity'item
+PATCH http://localhost:3000/cart/:cartId/items/:itemId/quantity
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
