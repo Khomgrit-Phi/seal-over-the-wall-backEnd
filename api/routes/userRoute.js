@@ -133,7 +133,7 @@ router.post("/address/:userId/:orderId", verify, async (req, res) => {
 
 
 //Signin with cookies
-router.post("cookie/signIn", async (req, res) => {
+router.post("cookie/signIn", verify, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

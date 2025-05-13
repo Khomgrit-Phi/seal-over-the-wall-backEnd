@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Get a userID
-GET http://localhost:3000/cart/681b7fd8d9b9f9f6465bf2e1
+GET http://localhost:3000/cart/6820dd2924d4639ab3d8e17f
 
 ### Add item to cartID
 POST http://localhost:3000/cart/6821de7c9f107d6ad0c88358/items

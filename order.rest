@@ -29,7 +29,7 @@ Content-Type: application/json
 
 
 ### Get a specific order (by object ID)
-GET http://localhost:6000/order/681b33538d95bd1c8e098fc4
+GET http://localhost:3000/order/68220c6643db794d597c5b03
 
 ### Patch order'status (by object ID)
 PATCH  http://localhost:6000/order/681b33538d95bd1c8e098fc4
