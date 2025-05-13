@@ -133,7 +133,7 @@ router.post("/address/:userId/:orderId", verify, async (req, res) => {
 
 
 //Signin with cookies
-router.post("cookie/signIn", verify, async (req, res) => {
+router.post("cookie/signIn", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -180,7 +180,8 @@ router.post("cookie/signIn", verify, async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        fullName: user.fullName,
+        firstName: user.firstName,
+        lastName: user.lastName,
     }}), // send some safe public info if needed
     await user.save();
 
