@@ -3,6 +3,7 @@ import express from "express";
 import { User} from "../../models/User.js";
 import { Order } from "../../models/Order.js";
 import { verify } from "../../middlewares/verify.js";
+import {authCookie} from "../../middlewares/authCookie.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Cart } from "../../models/Cart.js";
@@ -35,6 +36,7 @@ router.post("/signUp", async (req, res) => {
     });
 
     const cart = new Cart({userId: user._id})
+    await cart.save()
     console.log(cart)
 
     res

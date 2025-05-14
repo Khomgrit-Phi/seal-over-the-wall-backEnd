@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
+import { CartItem } from "./Cart.js";
+import { Product } from "./Product.js";
 
 const OrderItemSchema = new Schema(
   {
@@ -28,12 +30,25 @@ OrderItemSchema.pre("save", function (next) {
 
 const OrderSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  items: { type: [OrderItemSchema], required: true, default: [] },
+  items: { type: [{
+    cartId: {type: Schema.Types.ObjectId, ref:CartItem},
+    productId: {type: Schema.Types.ObjectId, ref:Product},
+    selectedSize: {type: String, required: true},
+    selectedColor: {type: String, required: true},
+    selectedImage: {type: String, required: true},
+    quantity: {type: Number, required: true},
+    unitPrice: {type: Number, required: true},
+    totalPrice: {type: Number, required:true},
+    addedAt: {type:Date},
+  }],
+  required: true, default: [] },
   shippingMethod: { type: String, enum: ["standard", "fastest", "cod"], default: "standard"},
-  status: {type: String, enum: ["pending", "paid", "shipped", "delivered", "cancelled"], default: "pending",},
+  status: {type: String, enum: ["Pending", "To be delivered", "On delivering", "Cancelled", "Shipped"], default: "pending",},
   total: { type: Number, default: 0 },
   vat: { type: Number, default: 7 },
   address: {
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
     address: { type: String, required: true },
     specific: { type: String },
     district: { type: String, required: true },
@@ -54,14 +69,14 @@ const OrderSchema = new Schema({
 export const Order = model("Order", OrderSchema);
 export const OrderItem = model("OrderItem", OrderItemSchema);
 
-// Hash cardNumber before saving
-OrderSchema.pre("save", async (next) => {
-  if (this.isModified("cardNumber")) {
-    this.cardNumber = await bcrypt.hash(this.cardNumber, 10);
+// Hash cardNumber and cvv before saving
+OrderSchema.pre("save", async function (next) {
+  if (this.isModified("payment.cardNumber")) {
+    this.payment.cardNumber = await bcrypt.hash(this.payment.cardNumber, 10);
   }
 
-  if (this.isModified("cvv")) {
-    this.cvv = await bcrypt.hash(this.cvv, 10);
+  if (this.isModified("payment.cvv")) {
+    this.payment.cvv = await bcrypt.hash(this.payment.cvv, 10);
   }
 
   next();
