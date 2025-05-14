@@ -1,6 +1,6 @@
 import express from "express";
-import { Cart, CartItem } from "../../models/Cart.js";
 import mongoose from "mongoose";
+import { Cart, CartItem } from "../../models/Cart.js";
 
 const router = express.Router();
 
@@ -98,6 +98,7 @@ router.post("/:userId/items", async (req, res) => {
 
   if (
     !productId ||
+    !quantity ||
     !unitPrice ||
     !selectedColor ||
     !selectedSize ||
@@ -110,7 +111,7 @@ router.post("/:userId/items", async (req, res) => {
   }
 
   try {
-    const cart = await Cart.findOne({userId});
+    const cart = await Cart.findOne({ userId });
     if (!cart) {
       return res.status(404).json({
         error: true,
@@ -125,7 +126,7 @@ router.post("/:userId/items", async (req, res) => {
     const newItemInCart = {
       _id: newItemId,
       cartId: cart._id,
-      productId: new mongoose.Types.ObjectId(productId),
+      productId,
       quantity,
       unitPrice,
       selectedSize,
@@ -137,23 +138,13 @@ router.post("/:userId/items", async (req, res) => {
     cart.items.push(newItemInCart);
 
     // create CartItem
-    const cartItem = new CartItem({
-      _id: newItemId,
-      cartId: cart._id,
-      productId: new mongoose.Types.ObjectId(productId),
-      quantity,
-      unitPrice,
-      selectedSize,
-      selectedColor,
-      selectedImage,
-    });
+    const cartItem = new CartItem(newItemInCart);
 
     // save CartItem
     await cartItem.save();
 
     // update total and updatedAt
     cart.total += quantity * unitPrice;
-    cart.updatedAt = new Date();
 
     // save cart
     await cart.save();
@@ -187,13 +178,13 @@ router.delete("/:cartId/item/:itemId", async (req, res) => {
       return res.status(404).json({ error: true, message: "Cart not found" });
     }
 
-    console.log(cart)
+    console.log(cart);
 
     const embeddedItemIndex = cart.items.findIndex(
       (item) => item._id.toString() === itemId
     );
 
-    console.log(embeddedItemIndex)
+    console.log(embeddedItemIndex);
 
     if (embeddedItemIndex >= 0) {
       // Store the price of that item first; if you delete it, you won't know its price
@@ -240,8 +231,7 @@ router.get("/populated/:userId", async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-
-    res.status(200).json({error:false,cart});
+    res.status(200).json({ error: false, cart });
   } catch (error) {
     console.error("Error in /populated/:userId route:", error);
     res
@@ -510,8 +500,5 @@ router.patch("/items/:itemId", async (req, res) => {
     });
   }
 });
-
-
-
 
 export default router;

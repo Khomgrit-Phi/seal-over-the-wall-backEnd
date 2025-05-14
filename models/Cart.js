@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
 const CartItemSchema = new Schema(
   {
     cartId: { type: Schema.Types.ObjectId, ref: "Cart", required: true },
@@ -23,19 +22,21 @@ CartItemSchema.pre("save", function (next) {
   this.totalPrice = this.quantity * this.unitPrice;
   next();
 });
-const CartSchema = new Schema({
-  sessionId: { type: String },
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, //, required: true
-  items: { type: [CartItemSchema], default: [] },
-  status: {
-    type: String,
-    enum: ["active", "abandoned", "converted"],
-    default: "active",
+
+const CartSchema = new Schema(
+  {
+    sessionId: { type: String },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, //, required: true
+    items: { type: [CartItemSchema], default: [] },
+    status: {
+      type: String,
+      enum: ["active", "abandoned", "converted"],
+      default: "active",
+    },
+    total: { type: Number, default: 0 },
+    vat: { type: Number, default: 7 },
   },
-  total: { type: Number, default: 0 },
-  vat: { type: Number, default: 7 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  { timestamps: true }
+);
 export const Cart = model("Cart", CartSchema);
 export const CartItem = model("CartItem", CartItemSchema);
