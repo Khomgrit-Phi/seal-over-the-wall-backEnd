@@ -6,8 +6,8 @@ Content-Type: application/json
   "userId": "6823497258ab08e080fcb05d"
 }
 
-### Get a userID
-GET http://localhost:3000/cart/6821de629f107d6ad0c88355
+### Get a cart by userID
+GET http://localhost:3000/cart/68237b7815a253bc068c4065
 
 
 
@@ -55,7 +55,7 @@ Content-Type: application/json
 
 
 ### Add item to cartID
-POST http://localhost:3000/cart/6821de629f107d6ad0c88355/items
+POST http://localhost:3000/cart/68237b7815a253bc068c4065/items
 Content-Type: application/json
 
 {
