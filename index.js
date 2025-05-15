@@ -9,8 +9,9 @@ dotenv.config()
 const PORT = process.env.PORT || 0
 
 const app = express();
+app.set("trust proxy", 1);
 const corsOptions = {
-    origin: 'http://localhost:5173', //Can replace with real vercel app
+    origin: ['http://localhost:5173', 'https://seal-over-the-wall-frontend.onrender.com'], //Can replace with real vercel app
     credentials: true,
 };
 app.use(express.json());
