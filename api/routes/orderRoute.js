@@ -74,7 +74,11 @@ router.get("/:orderId", async (req,res) => {
     }
 
     try{
-    const existOrder = await Order.findById(orderId )
+    const existOrder = await Order.findById(orderId).populate({
+        path: "items.productId",
+        model: "Product1"
+    });
+
     if (!existOrder) {
         return res.status(404).json({error: true,message: "Order not found"})
     }

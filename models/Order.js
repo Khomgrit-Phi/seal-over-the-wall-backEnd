@@ -42,7 +42,7 @@ const OrderSchema = new Schema({
     addedAt: {type:Date},
   }],
   required: true, default: [] },
-  shippingMethod: { type: String, enum: ["standard", "fastest", "cod"], default: "standard"},
+  shippingMethod: { type: String, default: "standard"},
   status: {type: String, enum: ["Pending", "To be delivered", "On delivering", "Cancelled", "Shipped"], default: "pending",},
   total: { type: Number, default: 0 },
   vat: { type: Number, default: 7 },
