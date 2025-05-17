@@ -60,15 +60,9 @@ router.get("/", async (req, res) => {
         message: "Product not found",
       });
     }
-    res.status(200).json({
-      error: false,
-      products,
-      message: "s found",
-    });
+       res.status(200).json(products);
   } catch (err) {
-    return res
-      .status(500)
-      .json({ error: true, message: "Server error", details: err.message });
+    res.status(500).json({ error: true, message: "Server error", details: err.message });
   }
 });
 
