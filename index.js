@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 app.set("trust proxy", 1);
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://seal-over-the-walls.vercel.app'], // Adjust for your Vercel frontend URL
+  origin: ['http://localhost:5173', 'https://seal-over-the-wall.vercel.app'], // Adjust for your Vercel frontend URL
   credentials: true,
 };
 
