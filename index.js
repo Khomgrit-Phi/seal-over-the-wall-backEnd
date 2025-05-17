@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 app.set("trust proxy", 1);
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://seal-over-the-walls.vercel.app/'], // Adjust for your Vercel frontend URL
+  origin: ['http://localhost:5173', 'https://seal-over-the-wall.vercel.app'], // ✅ Correct domain & no slash
   credentials: true,
 };
 
@@ -25,13 +25,10 @@ app.use(cookieParser());
 // Routes
 app.use("/", routes);
 
-// MongoDB and Server Initialization
+// MongoDB + Server Initialization
 (async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI); // ✅ Clean, no deprecated options
     console.log("✅ Connected to MongoDB");
 
     app.listen(PORT, () => {
